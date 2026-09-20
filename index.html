@@ -1,12 +1,13 @@
 <!DOCTYPE html>
 <html lang="pt-BR" class="scroll-smooth">
 <head>
-    <!-- Favicon SVG -->
-    <link rel="icon" type="image/svg+xml" href="logo.svg">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Espaço Prado — Psicopedagogia</title>
+    <title>Espaço Prado — Clínica de Psicopedagogia</title>
     
+    <!-- Favicon SVG -->
+    <link rel="icon" type="image/svg+xml" href="logo.svg">
+
     <!-- Google Fonts: Quicksand para títulos e Plus Jakarta Sans para leitura -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -15,28 +16,30 @@
     <!-- Tailwind CSS via CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
 
+    <!-- Supabase JS Client -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
     <script>
         tailwind.config = {
             theme: {
                 extend: {
                     colors: {
-                        // PALETA DE CORES PERSONALIZADA
-                        'brand-bg': '#FDFBF7',          // Fundo suave bege/creme
-                        'brand-card': '#FFFFFF',        // Fundo de cartões em branco puro
-                        'brand-text': '#2D3A34',        // Texto principal cinza escuro orgânico
-                        'brand-muted': '#5C6B63',       // Texto secundário legível
+                        'brand-bg': '#FDFBF7',          
+                        'brand-card': '#FFFFFF',        
+                        'brand-text': '#2D3A34',        
+                        'brand-muted': '#5C6B63',       
                         'brand-sage': {
-                            DEFAULT: '#7E998A',         // Verde menta suave / destaque principal
-                            dark: '#688273',            // Verde murcho escuro para hover
-                            light: '#EBF0EC',           // Tom claríssimo para fundos leves
+                            DEFAULT: '#7E998A',         
+                            dark: '#688273',            
+                            light: '#EBF0EC',           
                         },
                         'brand-lavender': {
-                            DEFAULT: '#B8A3B8',       // Lavanda suave / destaque secundário
+                            DEFAULT: '#B8A3B8',       
                             dark: '#A18AA1',
                             light: '#F4EFF4',
                         },
                         'brand-dusty': {
-                            DEFAULT: '#90A4AE',         // Azul poeira
+                            DEFAULT: '#90A4AE',         
                             light: '#ECEFF1',
                         }
                     },
@@ -53,7 +56,6 @@
     </script>
 
     <style>
-        /* Estilos e Animações Personalizadas */
         body {
             font-family: 'Plus Jakarta Sans', sans-serif;
             background-color: #FDFBF7;
@@ -65,14 +67,12 @@
             font-family: 'Quicksand', sans-serif;
         }
 
-        /* Efeito Blur no Cabeçalho */
         .glass-header {
             background-color: rgba(253, 251, 247, 0.85);
             backdrop-filter: blur(12px);
             -webkit-backdrop-filter: blur(12px);
         }
 
-        /* Classes para animação de aparição ao rolar a página */
         .reveal {
             opacity: 0;
             transform: translateY(24px);
@@ -84,7 +84,6 @@
             transform: translateY(0);
         }
 
-        /* Transição suave em botões e links */
         .btn-transition {
             transition: all 0.25s ease-in-out;
         }
@@ -99,7 +98,6 @@
             box-shadow: 0 4px 10px -4px rgba(126, 153, 138, 0.2);
         }
 
-        /* Accordion customizado */
         .accordion-content {
             max-height: 0;
             overflow: hidden;
@@ -110,12 +108,6 @@
             max-height: 500px;
             transition: max-height 0.5s ease-in-out;
         }
-
-        /* SVG Ícones sem emojis */
-        .icon-shape {
-            display: inline-block;
-            vertical-align: middle;
-        }
     </style>
 </head>
 <body class="antialiased selection:bg-brand-sage-light selection:text-brand-text">
@@ -124,7 +116,6 @@
     <header class="fixed top-0 left-0 w-full z-50 glass-header border-b border-stone-200/50 transition-all duration-300">
         <div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
             
-            <!-- Logotipo do Espaço Prado chamando a imagem logo.svg -->
             <a href="#inicio" class="flex items-center gap-3 group">
                 <img src="logo.svg" alt="Espaço Prado — Psicopedagogia" class="h-14 w-auto object-contain transition-transform duration-300 group-hover:scale-105">
             </a>
@@ -135,7 +126,7 @@
                 <a href="#sobre" class="hover:text-brand-sage transition-colors py-2">Sobre Nós</a>
                 <a href="#atendimento" class="hover:text-brand-sage transition-colors py-2">Atendimento</a>
                 <a href="#pais" class="hover:text-brand-sage transition-colors py-2">Pais e Responsáveis</a>
-                <a href="#gestao" class="hover:text-brand-sage transition-colors py-2">Gestão</a>
+                <a href="gestao.html" class="hover:text-brand-sage transition-colors py-2">Gestão</a>
                 <a href="#contato" class="bg-brand-sage text-white px-5 py-2.5 rounded-full font-semibold btn-transition hover:bg-brand-sage-dark">
                     Agendar Consulta
                 </a>
@@ -158,19 +149,16 @@
             <a href="#sobre" class="mobile-link block font-medium text-brand-text hover:text-brand-sage py-2">Sobre Nós</a>
             <a href="#atendimento" class="mobile-link block font-medium text-brand-text hover:text-brand-sage py-2">Atendimento</a>
             <a href="#pais" class="mobile-link block font-medium text-brand-text hover:text-brand-sage py-2">Pais e Responsáveis</a>
-            <a href="#gestao" class="mobile-link block font-medium text-brand-text hover:text-brand-sage py-2">Gestão</a>
+            <a href="gestao.html" class="mobile-link block font-medium text-brand-text hover:text-brand-sage py-2">Gestão</a>
             <a href="#contato" class="mobile-link block text-center bg-brand-sage text-white px-5 py-3 rounded-full font-semibold hover:bg-brand-sage-dark">
                 Agendar Consulta
-            </a>
-            <a href="gestao.html" class="text-sm font-medium text-brand-muted hover:text-brand-sage transition-colors">
-    Gestão
             </a>
         </div>
     </header>
 
     <main class="pt-20">
 
-        <!-- SEÇÃO PRINCIPAL (HERO) -->
+        <!-- HERO -->
         <section id="inicio" class="relative min-h-[85vh] flex items-center py-16 md:py-24 overflow-hidden">
             <div class="max-w-7xl mx-auto px-6 grid md:grid-cols-2 gap-12 items-center">
                 
@@ -194,15 +182,12 @@
                     </div>
                 </div>
 
-                <!-- Imagem do Hero / Ilustração Orgânica -->
                 <div class="relative reveal">
                     <div class="w-full h-80 sm:h-96 md:h-[450px] bg-stone-100 rounded-custom overflow-hidden shadow-lg border border-stone-200/60 relative">
-                        <!-- Imagem Ilustrativa de Acolhimento -->
                         <img src="https://images.unsplash.com/photo-1503676260728-1c00da094a0b?auto=format&fit=crop&q=80&w=1000" alt="Ambiente de aprendizado e apoio educacional" class="w-full h-full object-cover">
                         <div class="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent"></div>
                     </div>
                     
-                    <!-- Card Flutuante de Destaque -->
                     <div class="absolute -bottom-6 -left-4 sm:left-6 bg-brand-card p-5 rounded-2xl shadow-xl border border-stone-100 hidden sm:flex items-center gap-4 max-w-xs">
                         <div class="w-12 h-12 rounded-full bg-brand-lavender-light flex items-center justify-center text-brand-lavender-dark shrink-0">
                             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -219,7 +204,7 @@
             </div>
         </section>
 
-        <!-- SEÇÃO SOBRE NÓS -->
+        <!-- SOBRE NÓS -->
         <section id="sobre" class="py-20 bg-brand-card border-y border-stone-200/50">
             <div class="max-w-7xl mx-auto px-6">
                 
@@ -234,8 +219,6 @@
                 </div>
 
                 <div class="grid md:grid-cols-3 gap-8">
-                    
-                    <!-- Card 1 -->
                     <div class="p-8 rounded-custom bg-brand-bg border border-stone-200/60 reveal">
                         <div class="w-12 h-12 rounded-xl bg-brand-sage-light flex items-center justify-center text-brand-sage-dark mb-6">
                             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -248,7 +231,6 @@
                         </p>
                     </div>
 
-                    <!-- Card 2 -->
                     <div class="p-8 rounded-custom bg-brand-bg border border-stone-200/60 reveal">
                         <div class="w-12 h-12 rounded-xl bg-brand-lavender-light flex items-center justify-center text-brand-lavender-dark mb-6">
                             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -261,7 +243,6 @@
                         </p>
                     </div>
 
-                    <!-- Card 3 -->
                     <div class="p-8 rounded-custom bg-brand-bg border border-stone-200/60 reveal">
                         <div class="w-12 h-12 rounded-xl bg-brand-dusty-light flex items-center justify-center text-brand-dusty mb-6">
                             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -273,13 +254,12 @@
                             Trabalho em rede contínuo com famílias, escolas, psicólogos, neuropediatras e fonoaudiólogos para garantir suporte integral.
                         </p>
                     </div>
-
                 </div>
 
             </div>
         </section>
 
-        <!-- SEÇÃO ATENDIMENTO -->
+        <!-- ATENDIMENTO -->
         <section id="atendimento" class="py-20">
             <div class="max-w-7xl mx-auto px-6">
                 
@@ -309,13 +289,13 @@
 
                     <div class="bg-brand-card p-6 rounded-2xl border border-stone-200/60 shadow-sm reveal">
                         <div class="w-10 h-10 rounded-lg bg-brand-dusty-light flex items-center justify-center text-brand-dusty font-bold mb-4">03</div>
-                        <h4 class="font-title font-bold text-lg text-brand-text mb-2">Desenvolvimento das Funções Executivas</h4>
+                        <h4 class="font-title font-bold text-lg text-brand-text mb-2">Funções Executivas</h4>
                         <p class="text-brand-muted text-xs leading-relaxed">Estimulação da atenção, memória de trabalho, controle inibitório e planejamento de tarefas.</p>
                     </div>
 
                     <div class="bg-brand-card p-6 rounded-2xl border border-stone-200/60 shadow-sm reveal">
                         <div class="w-10 h-10 rounded-lg bg-stone-100 flex items-center justify-center text-brand-muted font-bold mb-4">04</div>
-                        <h4 class="font-title font-bold text-lg text-brand-text mb-2">Orientação Vocacional e de Estudos</h4>
+                        <h4 class="font-title font-bold text-lg text-brand-text mb-2">Orientação Vocacional</h4>
                         <p class="text-brand-muted text-xs leading-relaxed">Apoio para adolescentes na construção de rotinas autônomas de aprendizado e tomadas de decisão.</p>
                     </div>
 
@@ -324,7 +304,7 @@
             </div>
         </section>
 
-        <!-- SEÇÃO PAIS E RESPONSÁVEIS -->
+        <!-- PAIS E RESPONSÁVEIS -->
         <section id="pais" class="py-20 bg-brand-sage-light/40 border-y border-stone-200/50">
             <div class="max-w-7xl mx-auto px-6 grid lg:grid-cols-2 gap-12 items-center">
                 
@@ -337,7 +317,6 @@
                         Sabemos que as dificuldades na escola podem gerar ansiedade e insegurança no ambiente familiar. No Espaço Prado, os pais encontram um canal aberto de escuta, orientação clara e estratégias práticas para o dia a dia em casa.
                     </p>
 
-                    <!-- Lista de suporte -->
                     <div class="space-y-4">
                         <div class="flex items-start gap-3">
                             <div class="w-5 h-5 rounded-full bg-brand-sage text-white flex items-center justify-center text-xs shrink-0 mt-1">✓</div>
@@ -354,12 +333,10 @@
                     </div>
                 </div>
 
-                <!-- Accordion Interativo de Perguntas Frequentes dos Pais -->
                 <div class="bg-brand-card p-8 rounded-custom border border-stone-200/80 shadow-sm reveal">
                     <h3 class="font-title font-bold text-xl text-brand-text mb-6">Dúvidas Frequentes da Família</h3>
                     
                     <div class="space-y-4">
-                        <!-- Pergunta 1 -->
                         <div class="border-b border-stone-100 pb-4">
                             <button class="accordion-btn w-full flex justify-between items-center text-left font-title font-semibold text-brand-text py-2">
                                 <span>Quando procurar um psicopedagogo?</span>
@@ -372,7 +349,6 @@
                             </div>
                         </div>
 
-                        <!-- Pergunta 2 -->
                         <div class="border-b border-stone-100 pb-4">
                             <button class="accordion-btn w-full flex justify-between items-center text-left font-title font-semibold text-brand-text py-2">
                                 <span>Qual a duração do processo de avaliação?</span>
@@ -385,7 +361,6 @@
                             </div>
                         </div>
 
-                        <!-- Pergunta 3 -->
                         <div>
                             <button class="accordion-btn w-full flex justify-between items-center text-left font-title font-semibold text-brand-text py-2">
                                 <span>A clínica faz visitas à escola do meu filho?</span>
@@ -403,49 +378,7 @@
             </div>
         </section>
 
-        <!-- SEÇÃO GESTÃO E PARCERIA ESCOLAR -->
-        <section id="gestao" class="py-20 bg-brand-card">
-            <div class="max-w-7xl mx-auto px-6">
-                
-                <div class="grid md:grid-cols-2 gap-12 items-center">
-                    
-                    <div class="order-2 md:order-1 reveal">
-                        <div class="grid grid-cols-2 gap-4">
-                            <div class="p-6 rounded-2xl bg-brand-bg border border-stone-200/60">
-                                <h4 class="font-title font-bold text-2xl text-brand-sage mb-2">Relatórios</h4>
-                                <p class="text-xs text-brand-muted">Documentação clara e técnica para embasamento de adaptações curriculares.</p>
-                            </div>
-                            <div class="p-6 rounded-2xl bg-brand-bg border border-stone-200/60">
-                                <h4 class="font-title font-bold text-2xl text-brand-lavender-dark mb-2">Reuniões</h4>
-                                <p class="text-xs text-brand-muted">Diálogo constante com coordenações e professores orientadores.</p>
-                            </div>
-                            <div class="p-6 rounded-2xl bg-brand-bg border border-stone-200/60 col-span-2">
-                                <h4 class="font-title font-bold text-xl text-brand-text mb-2">Psicopedagogia Institucional</h4>
-                                <p class="text-xs text-brand-muted">Consultoria para escolas na mediação de casos complexos e capacitação de equipes sobre neurodiversidade no contexto escolar.</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="order-1 md:order-2 reveal">
-                        <span class="text-brand-sage text-xs font-semibold tracking-wider uppercase block mb-2">Parceria Institucional</span>
-                        <h2 class="text-3xl md:text-4xl font-title font-bold text-brand-text mb-6">
-                            Gestão Escolar e Apoio Pedagógico
-                        </h2>
-                        <p class="text-brand-muted text-base leading-relaxed mb-6">
-                            Trabalhamos lado a lado com gestores, coordenadores e professores. Nosso objetivo é construir pontes que facilitem a inclusão escolar efetiva, garantindo que as orientações do consultório sejam aplicadas com viabilidade na sala de aula.
-                        </p>
-                        <a href="#contato" class="inline-flex items-center gap-2 text-brand-sage-dark font-semibold hover:underline">
-                            <span>Solicitar contato para parcerias institucionais</span>
-                            <span>→</span>
-                        </a>
-                    </div>
-
-                </div>
-
-            </div>
-        </section>
-
-        <!-- SEÇÃO CONTATO -->
+        <!-- CONTATO / AGENDAMENTO -->
         <section id="contato" class="py-20 bg-brand-bg border-t border-stone-200/50">
             <div class="max-w-7xl mx-auto px-6">
                 
@@ -479,8 +412,7 @@
                         <div class="flex items-start gap-4">
                             <div class="w-10 h-10 rounded-full bg-brand-lavender-light flex items-center justify-center text-brand-lavender-dark shrink-0">
                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h32a2 2 0 012 2v14a2 2 0 01-2 2H5a2 2 0 01-2-2V5z"/>
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7l9 6 9-6"/>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
                                 </svg>
                             </div>
                             <div>
@@ -502,38 +434,51 @@
                         </div>
                     </div>
 
-                    <!-- Formulário de Contato -->
+                    <!-- Formulário de Agendamento -->
                     <div class="lg:col-span-2 bg-brand-card p-8 rounded-custom border border-stone-200/80 shadow-sm reveal">
-                        <form class="space-y-6">
-                            <div class="grid sm:grid-cols-2 gap-6">
+                        <form id="booking-form" class="space-y-4">
+                            <div class="grid md:grid-cols-2 gap-4">
                                 <div>
-                                    <label class="block text-xs font-semibold uppercase tracking-wider text-brand-text mb-2">Seu Nome</label>
-                                    <input type="text" placeholder="Nome completo" class="w-full px-4 py-3 rounded-xl bg-brand-bg border border-stone-200 focus:outline-none focus:border-brand-sage text-sm text-brand-text transition-colors">
+                                    <label class="block text-xs font-semibold text-brand-text uppercase mb-1">Nome Completo</label>
+                                    <input type="text" id="client_name" required class="w-full px-4 py-3 rounded-xl border border-stone-200 focus:outline-none focus:border-brand-sage text-sm" placeholder="Seu nome">
                                 </div>
                                 <div>
-                                    <label class="block text-xs font-semibold uppercase tracking-wider text-brand-text mb-2">Seu E-mail ou Telefone</label>
-                                    <input type="text" placeholder="Contato preferencial" class="w-full px-4 py-3 rounded-xl bg-brand-bg border border-stone-200 focus:outline-none focus:border-brand-sage text-sm text-brand-text transition-colors">
+                                    <label class="block text-xs font-semibold text-brand-text uppercase mb-1">E-mail</label>
+                                    <input type="email" id="client_email" required class="w-full px-4 py-3 rounded-xl border border-stone-200 focus:outline-none focus:border-brand-sage text-sm" placeholder="seu@email.com">
                                 </div>
                             </div>
 
-                            <div>
-                                <label class="block text-xs font-semibold uppercase tracking-wider text-brand-text mb-2">Assunto de Interesse</label>
-                                <select class="w-full px-4 py-3 rounded-xl bg-brand-bg border border-stone-200 focus:outline-none focus:border-brand-sage text-sm text-brand-text transition-colors">
-                                    <option>Avaliação Psicopedagógica</option>
-                                    <option>Acompanhamento e Intervenção</option>
-                                    <option>Orientação para Pais</option>
-                                    <option>Parceria com Escola / Gestão</option>
-                                    <option>Outro</option>
-                                </select>
+                            <div class="grid md:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-xs font-semibold text-brand-text uppercase mb-1">Telefone / WhatsApp</label>
+                                    <input type="tel" id="client_phone" required class="w-full px-4 py-3 rounded-xl border border-stone-200 focus:outline-none focus:border-brand-sage text-sm" placeholder="(11) 99999-9999">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-semibold text-brand-text uppercase mb-1">Tipo de Serviço</label>
+                                    <select id="service_type" required class="w-full px-4 py-3 rounded-xl border border-stone-200 focus:outline-none focus:border-brand-sage text-sm bg-white">
+                                        <option value="Avaliação Psicopedagógica">Avaliação Psicopedagógica</option>
+                                        <option value="Intervenção Psicopedagógica">Intervenção Psicopedagógica</option>
+                                        <option value="Orientação Parental">Orientação Parental</option>
+                                        <option value="Consultoria Escolar">Consultoria Escolar</option>
+                                    </select>
+                                </div>
                             </div>
 
-                            <div>
-                                <label class="block text-xs font-semibold uppercase tracking-wider text-brand-text mb-2">Como podemos te ajudar?</label>
-                                <textarea rows="4" placeholder="Descreva brevemente a necessidade..." class="w-full px-4 py-3 rounded-xl bg-brand-bg border border-stone-200 focus:outline-none focus:border-brand-sage text-sm text-brand-text transition-colors resize-none"></textarea>
+                            <div class="grid md:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-xs font-semibold text-brand-text uppercase mb-1">Data Preferencial</label>
+                                    <input type="date" id="appointment_date" required class="w-full px-4 py-3 rounded-xl border border-stone-200 focus:outline-none focus:border-brand-sage text-sm">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-semibold text-brand-text uppercase mb-1">Horário Preferencial</label>
+                                    <input type="time" id="appointment_time" required class="w-full px-4 py-3 rounded-xl border border-stone-200 focus:outline-none focus:border-brand-sage text-sm">
+                                </div>
                             </div>
 
-                            <button type="submit" class="w-full bg-brand-sage text-white py-4 rounded-xl font-semibold btn-transition hover:bg-brand-sage-dark text-center">
-                                Enviar Mensagem
+                            <div id="status-message" class="hidden p-4 rounded-xl text-sm font-medium"></div>
+
+                            <button type="submit" id="submit-btn" class="w-full bg-brand-sage text-white py-3.5 rounded-xl font-semibold btn-transition hover:bg-brand-sage-dark text-center">
+                                Confirmar Agendamento
                             </button>
                         </form>
                     </div>
@@ -558,8 +503,13 @@
         </div>
     </footer>
 
-    <!-- JS para Interatividade e Animações -->
+    <!-- JS PARA INTERATIVIDADE E INTEGRAÇÃO SUPABASE -->
     <script>
+        // Configuração do Supabase Client
+        const SUPABASE_URL = 'https://xmuyymsawzktgqvpqaks.supabase.co';
+        const SUPABASE_KEY = 'sb_publishable_FQOqLRbtH2ADOUYIbn7ggg_xVVbmVwj';
+        const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
         // Menu Mobile Toggle
         const mobileMenuBtn = document.getElementById('mobile-menu-btn');
         const mobileMenu = document.getElementById('mobile-menu');
@@ -589,7 +539,6 @@
                 const content = btn.nextElementSibling;
                 const icon = btn.querySelector('.accordion-icon');
 
-                // Fecha outros accordions
                 document.querySelectorAll('.accordion-content').forEach(item => {
                     if (item !== content) {
                         item.classList.remove('open');
@@ -599,13 +548,12 @@
                     }
                 });
 
-                // Toggle no accordion clicado
                 content.classList.toggle('open');
                 icon.textContent = content.classList.contains('open') ? '−' : '+';
             });
         });
 
-        // Scroll Reveal Animation (Animação ao rolar a página)
+        // Scroll Reveal Animation
         const reveals = document.querySelectorAll('.reveal');
 
         function revealOnScroll() {
@@ -621,8 +569,46 @@
         }
 
         window.addEventListener('scroll', revealOnScroll);
-        // Executa uma vez no carregamento
         revealOnScroll();
+
+        // Envio do Formulário de Agendamento ao Supabase
+        const form = document.getElementById('booking-form');
+        const submitBtn = document.getElementById('submit-btn');
+        const statusMsg = document.getElementById('status-message');
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            submitBtn.disabled = true;
+            submitBtn.innerText = "Enviando agendamento...";
+
+            const payload = {
+                client_name: document.getElementById('client_name').value,
+                client_email: document.getElementById('client_email').value,
+                client_phone: document.getElementById('client_phone').value,
+                service_type: document.getElementById('service_type').value,
+                appointment_date: document.getElementById('appointment_date').value,
+                appointment_time: document.getElementById('appointment_time').value
+            };
+
+            const { data, error } = await _supabase.from('appointments').insert([payload]);
+
+            statusMsg.classList.remove('hidden', 'bg-green-100', 'text-green-800', 'bg-red-100', 'text-red-800');
+
+            if (error) {
+                console.error('Erro Supabase:', error);
+                statusMsg.classList.add('bg-red-100', 'text-red-800');
+                statusMsg.innerText = "Erro ao efetuar o agendamento. Tente novamente.";
+                submitBtn.disabled = false;
+                submitBtn.innerText = "Confirmar Agendamento";
+            } else {
+                statusMsg.classList.add('bg-green-100', 'text-green-800');
+                statusMsg.innerText = "Agendamento realizado com sucesso! Entraremos em contato em breve para confirmação.";
+                form.reset();
+                submitBtn.disabled = false;
+                submitBtn.innerText = "Confirmar Agendamento";
+            }
+        });
     </script>
 </body>
 </html>
