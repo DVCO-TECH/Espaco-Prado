@@ -19,7 +19,7 @@
                         'brand-card': '#FFFFFF',
                         'brand-text': '#2D3A34',
                         'brand-muted': '#5C6B63',
-                        'brand-sage': { DEFAULT: '#7E998A', dark: '#688273' }
+                        'brand-sage': { DEFAULT: '#7E998A', dark: '#688273', light: '#EBF0EC' }
                     },
                     fontFamily: { 'body': ['Plus Jakarta Sans', 'sans-serif'] }
                 }
@@ -43,11 +43,11 @@
         </div>
     </header>
 
-    <!-- ÁREA DE LOGIN (Visível por padrão) -->
+    <!-- ÁREA DE LOGIN -->
     <main id="login-section" class="max-w-md mx-auto px-6 py-20 w-full">
         <div class="bg-white p-8 rounded-2xl border border-stone-200 shadow-sm">
             <h1 class="font-bold text-2xl text-brand-text mb-2">Acesso Restrito</h1>
-            <p class="text-brand-muted text-sm mb-6">Introduza as suas credenciais para aceder aos agendamentos.</p>
+            <p class="text-brand-muted text-sm mb-6">Introduza as suas credenciais para aceder ao painel.</p>
 
             <form id="login-form" class="space-y-4">
                 <div>
@@ -66,49 +66,95 @@
         </div>
     </main>
 
-    <!-- PAINEL ADMINISTRATIVO (Oculto até ao login) -->
-    <main id="dashboard-section" class="hidden max-w-6xl mx-auto px-6 py-10 w-full flex-grow">
-        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
-            <div>
-                <h1 class="font-bold text-2xl text-brand-text">Agendamentos Recebidos</h1>
-                <p class="text-brand-muted text-sm">Consulte as solicitações de consultas efetuadas no site.</p>
+    <!-- PAINEL ADMINISTRATIVO -->
+    <main id="dashboard-section" class="hidden max-w-6xl mx-auto px-6 py-8 w-full flex-grow">
+        
+        <!-- NAVEGAÇÃO POR ABAS -->
+        <div class="flex border-b border-stone-200 mb-8">
+            <button id="tab-appointments-btn" class="tab-btn px-6 py-3 font-semibold text-sm border-b-2 border-brand-sage text-brand-sage transition-all">
+                🗓️ Agendamentos
+            </button>
+            <button id="tab-students-btn" class="tab-btn px-6 py-3 font-semibold text-sm border-b-2 border-transparent text-brand-muted hover:text-brand-text transition-all">
+                🎓 Alunos / Pacientes
+            </button>
+        </div>
+
+        <!-- CONTEÚDO DA ABA 1: AGENDAMENTOS -->
+        <div id="tab-appointments" class="tab-content">
+            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
+                <div>
+                    <h1 class="font-bold text-2xl text-brand-text">Agendamentos Recebidos</h1>
+                    <p class="text-brand-muted text-sm">Consulte as solicitações de consultas efetuadas no site.</p>
+                </div>
+                
+                <div class="flex items-center gap-3">
+                    <button id="open-booking-modal-btn" class="bg-brand-sage text-white px-4 py-2 rounded-xl text-xs font-semibold hover:bg-brand-sage-dark transition-colors flex items-center gap-2">
+                        + Novo Agendamento
+                    </button>
+                    <button onclick="loadAppointments()" class="px-4 py-2 bg-stone-100 border border-stone-200 rounded-xl text-xs font-semibold hover:bg-stone-200 transition-colors">
+                        🔄 Atualizar
+                    </button>
+                </div>
             </div>
-            
-            <!-- AÇÕES SUPERIORES: BOTÃO NOVO AGENDAMENTO + RECARREGAR -->
-            <div class="flex items-center gap-3">
-                <button id="open-modal-btn" class="bg-brand-sage text-white px-4 py-2 rounded-xl text-xs font-semibold hover:bg-brand-sage-dark transition-colors flex items-center gap-2">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
-                    </svg>
-                    Novo Agendamento
-                </button>
-                <button onclick="loadAppointments()" class="px-4 py-2 bg-stone-100 border border-stone-200 rounded-xl text-xs font-semibold hover:bg-stone-200 transition-colors">
-                    🔄 Atualizar
-                </button>
+
+            <div class="bg-white rounded-2xl border border-stone-200 overflow-hidden shadow-sm">
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left text-sm">
+                        <thead class="bg-stone-50 border-b border-stone-200 text-xs font-semibold uppercase tracking-wider text-brand-muted">
+                            <tr>
+                                <th class="py-3.5 px-4">Data/Hora Agendada</th>
+                                <th class="py-3.5 px-4">Cliente</th>
+                                <th class="py-3.5 px-4">Contacto</th>
+                                <th class="py-3.5 px-4">Serviço</th>
+                                <th class="py-3.5 px-4">Solicitado em</th>
+                            </tr>
+                        </thead>
+                        <tbody id="appointments-list" class="divide-y divide-stone-100">
+                            <tr><td colspan="5" class="py-8 text-center text-brand-muted text-sm">A carregar agendamentos...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
 
-        <!-- TABELA DE AGENDAMENTOS -->
-        <div class="bg-white rounded-2xl border border-stone-200 overflow-hidden shadow-sm">
-            <div class="overflow-x-auto">
-                <table class="w-full text-left text-sm">
-                    <thead class="bg-stone-50 border-b border-stone-200 text-xs font-semibold uppercase tracking-wider text-brand-muted">
-                        <tr>
-                            <th class="py-3.5 px-4">Data/Hora Agendada</th>
-                            <th class="py-3.5 px-4">Cliente</th>
-                            <th class="py-3.5 px-4">Contacto</th>
-                            <th class="py-3.5 px-4">Serviço</th>
-                            <th class="py-3.5 px-4">Solicitado em</th>
-                        </tr>
-                    </thead>
-                    <tbody id="appointments-list" class="divide-y divide-stone-100">
-                        <tr>
-                            <td colspan="5" class="py-8 text-center text-brand-muted text-sm">A carregar agendamentos...</td>
-                        </tr>
-                    </tbody>
-                </table>
+        <!-- CONTEÚDO DA ABA 2: ALUNOS / PACIENTES -->
+        <div id="tab-students" class="tab-content hidden">
+            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
+                <div>
+                    <h1 class="font-bold text-2xl text-brand-text">Ficha de Alunos / Pacientes</h1>
+                    <p class="text-brand-muted text-sm">Gestão completa dos alunos em acompanhamento psicopedagógico.</p>
+                </div>
+                
+                <div class="flex items-center gap-3">
+                    <button id="open-student-modal-btn" class="bg-brand-sage text-white px-4 py-2 rounded-xl text-xs font-semibold hover:bg-brand-sage-dark transition-colors flex items-center gap-2">
+                        + Novo Cadastro de Aluno
+                    </button>
+                    <button onclick="loadStudents()" class="px-4 py-2 bg-stone-100 border border-stone-200 rounded-xl text-xs font-semibold hover:bg-stone-200 transition-colors">
+                        🔄 Atualizar
+                    </button>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-2xl border border-stone-200 overflow-hidden shadow-sm">
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left text-sm">
+                        <thead class="bg-stone-50 border-b border-stone-200 text-xs font-semibold uppercase tracking-wider text-brand-muted">
+                            <tr>
+                                <th class="py-3.5 px-4">Aluno(a)</th>
+                                <th class="py-3.5 px-4">Escola / Série</th>
+                                <th class="py-3.5 px-4">Responsável / Contacto</th>
+                                <th class="py-3.5 px-4">Status</th>
+                                <th class="py-3.5 px-4 text-right">Ação</th>
+                            </tr>
+                        </thead>
+                        <tbody id="students-list" class="divide-y divide-stone-100">
+                            <tr><td colspan="5" class="py-8 text-center text-brand-muted text-sm">A carregar cadastros de alunos...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
+
     </main>
 
     <!-- MODAL DE CRIAÇÃO DE NOVO AGENDAMENTO -->
@@ -116,26 +162,23 @@
         <div class="bg-white w-full max-w-lg rounded-2xl shadow-xl border border-stone-200 overflow-hidden">
             <div class="flex justify-between items-center px-6 py-4 border-b border-stone-100">
                 <h3 class="font-bold text-lg text-brand-text">Novo Agendamento Manual</h3>
-                <button id="close-modal-btn" class="text-stone-400 hover:text-stone-600 text-xl font-bold">&times;</button>
+                <button onclick="toggleModal('booking-modal', false)" class="text-stone-400 hover:text-stone-600 text-xl font-bold">&times;</button>
             </div>
-
             <form id="admin-booking-form" class="p-6 space-y-4">
                 <div>
                     <label class="block text-xs font-semibold text-brand-text uppercase mb-1">Nome do Cliente</label>
-                    <input type="text" id="admin_client_name" required class="w-full px-4 py-2.5 rounded-xl border border-stone-200 focus:outline-none focus:border-brand-sage text-sm" placeholder="Nome completo">
+                    <input type="text" id="admin_client_name" required class="w-full px-4 py-2.5 rounded-xl border border-stone-200 focus:outline-none focus:border-brand-sage text-sm">
                 </div>
-
                 <div class="grid grid-cols-2 gap-4">
                     <div>
                         <label class="block text-xs font-semibold text-brand-text uppercase mb-1">E-mail</label>
-                        <input type="email" id="admin_client_email" required class="w-full px-4 py-2.5 rounded-xl border border-stone-200 focus:outline-none focus:border-brand-sage text-sm" placeholder="email@exemplo.com">
+                        <input type="email" id="admin_client_email" required class="w-full px-4 py-2.5 rounded-xl border border-stone-200 focus:outline-none focus:border-brand-sage text-sm">
                     </div>
                     <div>
                         <label class="block text-xs font-semibold text-brand-text uppercase mb-1">Telefone / WhatsApp</label>
-                        <input type="tel" id="admin_client_phone" required class="w-full px-4 py-2.5 rounded-xl border border-stone-200 focus:outline-none focus:border-brand-sage text-sm" placeholder="(00) 00000-0000">
+                        <input type="tel" id="admin_client_phone" required class="w-full px-4 py-2.5 rounded-xl border border-stone-200 focus:outline-none focus:border-brand-sage text-sm">
                     </div>
                 </div>
-
                 <div>
                     <label class="block text-xs font-semibold text-brand-text uppercase mb-1">Tipo de Serviço</label>
                     <select id="admin_service_type" required class="w-full px-4 py-2.5 rounded-xl border border-stone-200 focus:outline-none focus:border-brand-sage text-sm bg-white">
@@ -145,7 +188,6 @@
                         <option value="Consultoria Escolar">Consultoria Escolar</option>
                     </select>
                 </div>
-
                 <div class="grid grid-cols-2 gap-4">
                     <div>
                         <label class="block text-xs font-semibold text-brand-text uppercase mb-1">Data</label>
@@ -156,14 +198,150 @@
                         <input type="time" id="admin_appointment_time" required class="w-full px-4 py-2.5 rounded-xl border border-stone-200 focus:outline-none focus:border-brand-sage text-sm">
                     </div>
                 </div>
-
-                <div id="modal-status-msg" class="hidden p-3 rounded-xl text-xs font-medium"></div>
-
+                <div id="booking-status-msg" class="hidden p-3 rounded-xl text-xs font-medium"></div>
                 <div class="flex justify-end gap-3 pt-3 border-t border-stone-100">
-                    <button type="button" id="cancel-modal-btn" class="px-4 py-2 rounded-xl text-xs font-semibold border border-stone-200 hover:bg-stone-50">Cancelar</button>
-                    <button type="submit" id="admin-submit-btn" class="bg-brand-sage text-white px-5 py-2 rounded-xl text-xs font-semibold hover:bg-brand-sage-dark transition-colors">Salvar Agendamento</button>
+                    <button type="button" onclick="toggleModal('booking-modal', false)" class="px-4 py-2 rounded-xl text-xs font-semibold border border-stone-200 hover:bg-stone-50">Cancelar</button>
+                    <button type="submit" id="admin-submit-btn" class="bg-brand-sage text-white px-5 py-2 rounded-xl text-xs font-semibold hover:bg-brand-sage-dark">Salvar Agendamento</button>
                 </div>
             </form>
+        </div>
+    </div>
+
+    <!-- MODAL DE CADASTRO DE NOVO ALUNO/PACIENTE -->
+    <div id="student-modal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4 overflow-y-auto">
+        <div class="bg-white w-full max-w-2xl rounded-2xl shadow-xl border border-stone-200 overflow-hidden my-8">
+            <div class="flex justify-between items-center px-6 py-4 border-b border-stone-100">
+                <h3 class="font-bold text-lg text-brand-text">Cadastrar Novo Aluno / Paciente</h3>
+                <button onclick="toggleModal('student-modal', false)" class="text-stone-400 hover:text-stone-600 text-xl font-bold">&times;</button>
+            </div>
+            <form id="student-form" class="p-6 space-y-4">
+                
+                <!-- Dados do Aluno -->
+                <p class="text-xs font-bold text-brand-sage uppercase tracking-wider">Dados do Aluno</p>
+                <div class="grid md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-semibold text-brand-text uppercase mb-1">Nome Completo do Aluno</label>
+                        <input type="text" id="full_name" required class="w-full px-4 py-2.5 rounded-xl border border-stone-200 focus:outline-none focus:border-brand-sage text-sm" placeholder="Nome do aluno">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-brand-text uppercase mb-1">Data de Nascimento</label>
+                        <input type="date" id="birth_date" class="w-full px-4 py-2.5 rounded-xl border border-stone-200 focus:outline-none focus:border-brand-sage text-sm">
+                    </div>
+                </div>
+                <div class="grid md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-semibold text-brand-text uppercase mb-1">Escola</label>
+                        <input type="text" id="school_name" class="w-full px-4 py-2.5 rounded-xl border border-stone-200 focus:outline-none focus:border-brand-sage text-sm" placeholder="Nome da instituição">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-brand-text uppercase mb-1">Série / Período</label>
+                        <input type="text" id="grade" class="w-full px-4 py-2.5 rounded-xl border border-stone-200 focus:outline-none focus:border-brand-sage text-sm" placeholder="Ex: 4º Ano Ensino Fundamental">
+                    </div>
+                </div>
+
+                <hr class="border-stone-100">
+
+                <!-- Dados do Responsável -->
+                <p class="text-xs font-bold text-brand-sage uppercase tracking-wider">Dados do Responsável</p>
+                <div class="grid md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-semibold text-brand-text uppercase mb-1">Nome do Responsável</label>
+                        <input type="text" id="guardian_name" required class="w-full px-4 py-2.5 rounded-xl border border-stone-200 focus:outline-none focus:border-brand-sage text-sm" placeholder="Mãe, pai ou tutor">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-brand-text uppercase mb-1">CPF do Responsável</label>
+                        <input type="text" id="guardian_cpf" class="w-full px-4 py-2.5 rounded-xl border border-stone-200 focus:outline-none focus:border-brand-sage text-sm" placeholder="000.000.000-00">
+                    </div>
+                </div>
+                <div class="grid md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-semibold text-brand-text uppercase mb-1">Telefone / WhatsApp</label>
+                        <input type="tel" id="student_phone" required class="w-full px-4 py-2.5 rounded-xl border border-stone-200 focus:outline-none focus:border-brand-sage text-sm" placeholder="(00) 00000-0000">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-brand-text uppercase mb-1">E-mail</label>
+                        <input type="email" id="student_email" class="w-full px-4 py-2.5 rounded-xl border border-stone-200 focus:outline-none focus:border-brand-sage text-sm" placeholder="email@exemplo.com">
+                    </div>
+                </div>
+
+                <hr class="border-stone-100">
+
+                <!-- Dados Clínicos -->
+                <p class="text-xs font-bold text-brand-sage uppercase tracking-wider">Histórico Clínico Básica</p>
+                <div>
+                    <label class="block text-xs font-semibold text-brand-text uppercase mb-1">Queixa Principal / Motivo da Consulta</label>
+                    <textarea id="main_complaint" rows="2" class="w-full px-4 py-2.5 rounded-xl border border-stone-200 focus:outline-none focus:border-brand-sage text-sm" placeholder="Descreva os principais desafios relatados..."></textarea>
+                </div>
+                <div class="grid md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-semibold text-brand-text uppercase mb-1">Diagnóstico / Laudo Prévio</label>
+                        <input type="text" id="diagnosis" class="w-full px-4 py-2.5 rounded-xl border border-stone-200 focus:outline-none focus:border-brand-sage text-sm" placeholder="Ex: TDAH, Dislexia, sem laudo">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-brand-text uppercase mb-1">Status do Atendimento</label>
+                        <select id="student_status" class="w-full px-4 py-2.5 rounded-xl border border-stone-200 focus:outline-none focus:border-brand-sage text-sm bg-white">
+                            <option value="Em Avaliação">Em Avaliação</option>
+                            <option value="Em Intervenção">Em Intervenção</option>
+                            <option value="Alta">Alta</option>
+                            <option value="Inativo">Inativo</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div id="student-status-msg" class="hidden p-3 rounded-xl text-xs font-medium"></div>
+
+                <div class="flex justify-end gap-3 pt-3 border-t border-stone-100">
+                    <button type="button" onclick="toggleModal('student-modal', false)" class="px-4 py-2 rounded-xl text-xs font-semibold border border-stone-200 hover:bg-stone-50">Cancelar</button>
+                    <button type="submit" id="student-submit-btn" class="bg-brand-sage text-white px-5 py-2 rounded-xl text-xs font-semibold hover:bg-brand-sage-dark">Salvar Ficha do Aluno</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL DE VISUALIZAÇÃO DETALHADA DA FICHA -->
+    <div id="view-student-modal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4 overflow-y-auto">
+        <div class="bg-white w-full max-w-2xl rounded-2xl shadow-xl border border-stone-200 overflow-hidden my-8 p-6 space-y-6">
+            <div class="flex justify-between items-start border-b border-stone-100 pb-4">
+                <div>
+                    <h3 id="view_student_name" class="font-bold text-xl text-brand-text">---</h3>
+                    <p id="view_student_status" class="text-xs font-medium inline-block px-2.5 py-1 rounded-full bg-brand-sage-light text-brand-sage-dark mt-1">---</p>
+                </div>
+                <button onclick="toggleModal('view-student-modal', false)" class="text-stone-400 hover:text-stone-600 text-xl font-bold">&times;</button>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-6 text-sm">
+                <div>
+                    <h4 class="font-semibold text-xs text-stone-400 uppercase tracking-wider mb-2">Dados do Aluno</h4>
+                    <p><strong>Nascimento:</strong> <span id="view_birth_date">-</span></p>
+                    <p><strong>Escola:</strong> <span id="view_school">-</span></p>
+                    <p><strong>Série:</strong> <span id="view_grade">-</span></p>
+                </div>
+                <div>
+                    <h4 class="font-semibold text-xs text-stone-400 uppercase tracking-wider mb-2">Responsável & Contacto</h4>
+                    <p><strong>Nome:</strong> <span id="view_guardian">-</span></p>
+                    <p><strong>CPF:</strong> <span id="view_cpf">-</span></p>
+                    <p><strong>Telefone:</strong> <span id="view_phone">-</span></p>
+                    <p><strong>E-mail:</strong> <span id="view_email">-</span></p>
+                </div>
+            </div>
+
+            <hr class="border-stone-100">
+
+            <div class="text-sm space-y-3">
+                <h4 class="font-semibold text-xs text-stone-400 uppercase tracking-wider">Histórico Clínico</h4>
+                <div>
+                    <span class="block font-semibold text-stone-600">Queixa Principal:</span>
+                    <p id="view_complaint" class="text-brand-muted bg-stone-50 p-3 rounded-xl border border-stone-100 mt-1">-</p>
+                </div>
+                <div>
+                    <span class="block font-semibold text-stone-600">Diagnóstico / Laudo:</span>
+                    <p id="view_diagnosis" class="text-brand-muted mt-1">-</p>
+                </div>
+            </div>
+
+            <div class="flex justify-end pt-4 border-t border-stone-100">
+                <button onclick="toggleModal('view-student-modal', false)" class="px-5 py-2 bg-stone-100 text-brand-text rounded-xl text-xs font-semibold hover:bg-stone-200">Fechar</button>
+            </div>
         </div>
     </div>
 
@@ -171,130 +349,214 @@
         &copy; Espaço Prado — Área de Gestão
     </footer>
 
+    <!-- SCRIPT JS COMPLETO -->
     <script>
         const SUPABASE_URL = 'https://xmuyymsawzktgqvpqaks.supabase.co';
         const SUPABASE_KEY = 'sb_publishable_FQOqLRbtH2ADOUYIbn7ggg_xVVbmVwj';
         const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-        const loginSection = document.getElementById('login-section');
-        const dashboardSection = document.getElementById('dashboard-section');
-        const userArea = document.getElementById('user-area');
-        const userEmail = document.getElementById('user-email');
-        const loginForm = document.getElementById('login-form');
-        const loginError = document.getElementById('login-error');
+        let currentStudentsData = [];
 
-        // Elementos da Modal
-        const modal = document.getElementById('booking-modal');
-        const openModalBtn = document.getElementById('open-modal-btn');
-        const closeModalBtn = document.getElementById('close-modal-btn');
-        const cancelModalBtn = document.getElementById('cancel-modal-btn');
-        const adminForm = document.getElementById('admin-booking-form');
-        const adminSubmitBtn = document.getElementById('admin-submit-btn');
-        const modalStatusMsg = document.getElementById('modal-status-msg');
-
-        // Controlo da Modal
-        openModalBtn.addEventListener('click', () => modal.classList.remove('hidden'));
-        closeModalBtn.addEventListener('click', () => modal.classList.add('hidden'));
-        cancelModalBtn.addEventListener('click', () => modal.classList.add('hidden'));
-
-        // Verificar Sessão ao Carregar a Página
-        async function checkSession() {
-            const { data: { session } } = await _supabase.auth.getSession();
-            if (session) {
-                showDashboard(session.user);
-            } else {
-                showLogin();
-            }
+        // Alternar Modal Helper
+        function toggleModal(modalId, show) {
+            const el = document.getElementById(modalId);
+            if (show) el.classList.remove('hidden');
+            else el.classList.add('hidden');
         }
 
-        // Fazer Login
-        loginForm.addEventListener('submit', async (e) => {
+        // Navegação de Abas
+        const tabAppointmentsBtn = document.getElementById('tab-appointments-btn');
+        const tabStudentsBtn = document.getElementById('tab-students-btn');
+        const tabAppointments = document.getElementById('tab-appointments');
+        const tabStudents = document.getElementById('tab-students');
+
+        tabAppointmentsBtn.addEventListener('click', () => {
+            tabAppointments.classList.remove('hidden');
+            tabStudents.classList.add('hidden');
+            tabAppointmentsBtn.className = "tab-btn px-6 py-3 font-semibold text-sm border-b-2 border-brand-sage text-brand-sage transition-all";
+            tabStudentsBtn.className = "tab-btn px-6 py-3 font-semibold text-sm border-b-2 border-transparent text-brand-muted hover:text-brand-text transition-all";
+        });
+
+        tabStudentsBtn.addEventListener('click', () => {
+            tabStudents.classList.remove('hidden');
+            tabAppointments.classList.add('hidden');
+            tabStudentsBtn.className = "tab-btn px-6 py-3 font-semibold text-sm border-b-2 border-brand-sage text-brand-sage transition-all";
+            tabAppointmentsBtn.className = "tab-btn px-6 py-3 font-semibold text-sm border-b-2 border-transparent text-brand-muted hover:text-brand-text transition-all";
+            loadStudents();
+        });
+
+        document.getElementById('open-booking-modal-btn').addEventListener('click', () => toggleModal('booking-modal', true));
+        document.getElementById('open-student-modal-btn').addEventListener('click', () => toggleModal('student-modal', true));
+
+        // Autenticação
+        async function checkSession() {
+            const { data: { session } } = await _supabase.auth.getSession();
+            if (session) showDashboard(session.user);
+            else showLogin();
+        }
+
+        document.getElementById('login-form').addEventListener('submit', async (e) => {
             e.preventDefault();
-            loginError.classList.add('hidden');
-            
             const email = document.getElementById('email').value;
             const password = document.getElementById('password').value;
-
             const { data, error } = await _supabase.auth.signInWithPassword({ email, password });
 
             if (error) {
-                loginError.innerText = "E-mail ou palavra-passe incorretos.";
-                loginError.classList.remove('hidden');
+                document.getElementById('login-error').innerText = "E-mail ou palavra-passe incorretos.";
+                document.getElementById('login-error').classList.remove('hidden');
             } else {
                 showDashboard(data.user);
             }
         });
 
-        // Exibir o Painel
         function showDashboard(user) {
-            loginSection.classList.add('hidden');
-            dashboardSection.classList.remove('hidden');
-            userArea.classList.remove('hidden');
-            userEmail.innerText = user.email;
+            document.getElementById('login-section').classList.add('hidden');
+            document.getElementById('dashboard-section').classList.remove('hidden');
+            document.getElementById('user-area').classList.remove('hidden');
+            document.getElementById('user-email').innerText = user.email;
             loadAppointments();
         }
 
-        // Exibir o Login
         function showLogin() {
-            loginSection.classList.remove('hidden');
-            dashboardSection.classList.add('hidden');
-            userArea.classList.add('hidden');
+            document.getElementById('login-section').classList.remove('hidden');
+            document.getElementById('dashboard-section').classList.add('hidden');
+            document.getElementById('user-area').classList.add('hidden');
         }
 
-        // Fazer Logout
         async function logout() {
             await _supabase.auth.signOut();
             showLogin();
         }
 
-        // Carregar Agendamentos do Supabase
+        // Carregar Agendamentos
         async function loadAppointments() {
             const listContainer = document.getElementById('appointments-list');
             listContainer.innerHTML = '<tr><td colspan="5" class="py-8 text-center text-brand-muted text-sm">A carregar agendamentos...</td></tr>';
 
-            const { data, error } = await _supabase
-                .from('appointments')
-                .select('*')
-                .order('appointment_date', { ascending: true });
+            const { data, error } = await _supabase.from('appointments').select('*').order('appointment_date', { ascending: true });
 
-            if (error) {
-                listContainer.innerHTML = '<tr><td colspan="5" class="py-8 text-center text-red-600 text-sm">Erro ao carregar os dados.</td></tr>';
-                return;
-            }
-
-            if (data.length === 0) {
+            if (error || !data.length) {
                 listContainer.innerHTML = '<tr><td colspan="5" class="py-8 text-center text-brand-muted text-sm">Nenhum agendamento encontrado.</td></tr>';
                 return;
             }
 
             listContainer.innerHTML = data.map(item => `
                 <tr class="hover:bg-stone-50/80 transition-colors">
-                    <td class="py-4 px-4 font-semibold text-brand-sage-dark">
-                        ${item.appointment_date} <span class="text-xs font-normal text-stone-500">às ${item.appointment_time}</span>
-                    </td>
+                    <td class="py-4 px-4 font-semibold text-brand-sage-dark">${item.appointment_date} <span class="text-xs font-normal text-stone-500">às ${item.appointment_time}</span></td>
                     <td class="py-4 px-4 font-medium">${item.client_name}</td>
                     <td class="py-4 px-4 text-xs">
                         <div>📞 ${item.client_phone}</div>
                         <div class="text-stone-400">${item.client_email}</div>
                     </td>
-                    <td class="py-4 px-4">
-                        <span class="px-2.5 py-1 bg-stone-100 text-stone-700 rounded-lg text-xs font-medium">
-                            ${item.service_type}
-                        </span>
+                    <td class="py-4 px-4"><span class="px-2.5 py-1 bg-stone-100 text-stone-700 rounded-lg text-xs font-medium">${item.service_type}</span></td>
+                    <td class="py-4 px-4 text-xs text-stone-400">${new Date(item.created_at).toLocaleDateString('pt-BR')}</td>
+                </tr>
+            `).join('');
+        }
+
+        // Carregar Alunos / Pacientes
+        async function loadStudents() {
+            const listContainer = document.getElementById('students-list');
+            listContainer.innerHTML = '<tr><td colspan="5" class="py-8 text-center text-brand-muted text-sm">A carregar alunos...</td></tr>';
+
+            const { data, error } = await _supabase.from('students').select('*').order('created_at', { ascending: false });
+
+            if (error || !data.length) {
+                listContainer.innerHTML = '<tr><td colspan="5" class="py-8 text-center text-brand-muted text-sm">Nenhum aluno cadastrado.</td></tr>';
+                return;
+            }
+
+            currentStudentsData = data;
+
+            listContainer.innerHTML = data.map((item, index) => `
+                <tr class="hover:bg-stone-50/80 transition-colors">
+                    <td class="py-4 px-4 font-medium text-brand-text">${item.full_name}</td>
+                    <td class="py-4 px-4 text-xs">
+                        <div>${item.school_name || 'Não informada'}</div>
+                        <div class="text-stone-400">${item.grade || ''}</div>
                     </td>
-                    <td class="py-4 px-4 text-xs text-stone-400">
-                        ${new Date(item.created_at).toLocaleDateString('pt-BR')}
+                    <td class="py-4 px-4 text-xs">
+                        <div class="font-semibold">${item.guardian_name}</div>
+                        <div class="text-stone-400">📞 ${item.phone}</div>
+                    </td>
+                    <td class="py-4 px-4">
+                        <span class="px-2.5 py-1 rounded-full text-xs font-medium bg-brand-sage-light text-brand-sage-dark">${item.status || 'Em Avaliação'}</span>
+                    </td>
+                    <td class="py-4 px-4 text-right">
+                        <button onclick="viewStudentDetails(${index})" class="text-xs font-semibold text-brand-sage hover:underline">Ver Ficha</button>
                     </td>
                 </tr>
             `).join('');
         }
 
-        // Envio do Agendamento Manual via Admin
-        adminForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
+        // Ver Detalhes da Ficha do Aluno
+        function viewStudentDetails(index) {
+            const student = currentStudentsData[index];
+            if (!student) return;
 
-            adminSubmitBtn.disabled = true;
-            adminSubmitBtn.innerText = "A guardar...";
+            document.getElementById('view_student_name').innerText = student.full_name;
+            document.getElementById('view_student_status').innerText = student.status || 'Em Avaliação';
+            document.getElementById('view_birth_date').innerText = student.birth_date || 'Não informada';
+            document.getElementById('view_school').innerText = student.school_name || 'Não informada';
+            document.getElementById('view_grade').innerText = student.grade || 'Não informada';
+            document.getElementById('view_guardian').innerText = student.guardian_name;
+            document.getElementById('view_cpf').innerText = student.guardian_cpf || 'Não informado';
+            document.getElementById('view_phone').innerText = student.phone;
+            document.getElementById('view_email').innerText = student.email || 'Não informado';
+            document.getElementById('view_complaint').innerText = student.main_complaint || 'Nenhuma observação registada.';
+            document.getElementById('view_diagnosis').innerText = student.diagnosis || 'Sem laudo informado.';
+
+            toggleModal('view-student-modal', true);
+        }
+
+        // Submissão de Novo Aluno
+        document.getElementById('student-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btn = document.getElementById('student-submit-btn');
+            const msg = document.getElementById('student-status-msg');
+            btn.disabled = true; btn.innerText = "A guardar...";
+
+            const payload = {
+                full_name: document.getElementById('full_name').value,
+                birth_date: document.getElementById('birth_date').value || null,
+                school_name: document.getElementById('school_name').value,
+                grade: document.getElementById('grade').value,
+                guardian_name: document.getElementById('guardian_name').value,
+                guardian_cpf: document.getElementById('guardian_cpf').value,
+                phone: document.getElementById('student_phone').value,
+                email: document.getElementById('student_email').value,
+                main_complaint: document.getElementById('main_complaint').value,
+                diagnosis: document.getElementById('diagnosis').value,
+                status: document.getElementById('student_status').value
+            };
+
+            const { error } = await _supabase.from('students').insert([payload]);
+
+            msg.classList.remove('hidden', 'bg-green-100', 'text-green-800', 'bg-red-100', 'text-red-800');
+
+            if (error) {
+                msg.classList.add('bg-red-100', 'text-red-800');
+                msg.innerText = "Erro ao guardar a ficha do aluno.";
+                btn.disabled = false; btn.innerText = "Salvar Ficha do Aluno";
+            } else {
+                msg.classList.add('bg-green-100', 'text-green-800');
+                msg.innerText = "Aluno cadastrado com sucesso!";
+                setTimeout(() => {
+                    toggleModal('student-modal', false);
+                    document.getElementById('student-form').reset();
+                    msg.classList.add('hidden');
+                    btn.disabled = false; btn.innerText = "Salvar Ficha do Aluno";
+                    loadStudents();
+                }, 1000);
+            }
+        });
+
+        // Submissão de Novo Agendamento
+        document.getElementById('admin-booking-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btn = document.getElementById('admin-submit-btn');
+            const msg = document.getElementById('booking-status-msg');
+            btn.disabled = true; btn.innerText = "A guardar...";
 
             const payload = {
                 client_name: document.getElementById('admin_client_name').value,
@@ -305,26 +567,22 @@
                 appointment_time: document.getElementById('admin_appointment_time').value
             };
 
-            const { data, error } = await _supabase.from('appointments').insert([payload]);
+            const { error } = await _supabase.from('appointments').insert([payload]);
 
-            modalStatusMsg.classList.remove('hidden', 'bg-green-100', 'text-green-800', 'bg-red-100', 'text-red-800');
+            msg.classList.remove('hidden', 'bg-green-100', 'text-green-800', 'bg-red-100', 'text-red-800');
 
             if (error) {
-                console.error('Erro ao guardar agendamento:', error);
-                modalStatusMsg.classList.add('bg-red-100', 'text-red-800');
-                modalStatusMsg.innerText = "Erro ao efetuar o agendamento.";
-                adminSubmitBtn.disabled = false;
-                adminSubmitBtn.innerText = "Salvar Agendamento";
+                msg.classList.add('bg-red-100', 'text-red-800');
+                msg.innerText = "Erro ao efetuar agendamento.";
+                btn.disabled = false; btn.innerText = "Salvar Agendamento";
             } else {
-                modalStatusMsg.classList.add('bg-green-100', 'text-green-800');
-                modalStatusMsg.innerText = "Agendamento criado com sucesso!";
-
+                msg.classList.add('bg-green-100', 'text-green-800');
+                msg.innerText = "Agendamento criado com sucesso!";
                 setTimeout(() => {
-                    modal.classList.add('hidden');
-                    adminForm.reset();
-                    modalStatusMsg.classList.add('hidden');
-                    adminSubmitBtn.disabled = false;
-                    adminSubmitBtn.innerText = "Salvar Agendamento";
+                    toggleModal('booking-modal', false);
+                    document.getElementById('admin-booking-form').reset();
+                    msg.classList.add('hidden');
+                    btn.disabled = false; btn.innerText = "Salvar Agendamento";
                     loadAppointments();
                 }, 1000);
             }
