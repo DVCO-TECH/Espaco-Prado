@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agendamento — Espaço Prado</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Quicksand:wght@600;700&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- SDK do Supabase JS -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'brand-bg': '#FDFBF7',
+                        'brand-card': '#FFFFFF',
+                        'brand-text': '#2D3A34',
+                        'brand-muted': '#5C6B63',
+                        'brand-sage': { 
+                            DEFAULT: '#7E998A', 
+                            dark: '#688273', 
+                            light: '#EBF0EC' 
+                        }
+                    },
+                    fontFamily: { 
+                        'title': ['Quicksand', 'sans-serif'], 
+                        'body': ['Plus Jakarta Sans', 'sans-serif'] 
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-brand-bg text-brand-text font-body min-h-screen flex flex-col justify-between antialiased">
+
+    <!-- CABEÇALHO -->
+    <header class="py-6 border-b border-stone-200/60 bg-white/50 backdrop-blur-md">
+        <div class="max-w-5xl mx-auto px-6 flex justify-between items-center">
+            <a href="index.html" class="flex items-center gap-2">
+                <img src="logo.svg" alt="Espaço Prado" class="h-10 w-auto">
+            </a>
+            <a href="index.html" class="text-sm font-semibold text-brand-muted hover:text-brand-sage transition-colors">
+                ← Voltar ao site
+            </a>
+        </div>
+    </header>
+
+    <!-- FORMULÁRIO DE AGENDAMENTO -->
+    <main class="max-w-2xl mx-auto px-6 py-12 w-full">
+        <div class="bg-brand-card p-8 md:p-10 rounded-2xl border border-stone-200/80 shadow-sm">
+            <h1 class="font-title font-bold text-3xl text-brand-text mb-2">Agende a sua Consulta</h1>
+            <p class="text-brand-muted text-sm mb-8">Preencha os dados abaixo para solicitar o seu atendimento psicopedagógico.</p>
+
+            <form id="booking-form" class="space-y-6">
+                <div>
+                    <label for="client_name" class="block text-xs font-semibold uppercase tracking-wider text-brand-text mb-2">Nome Completo</label>
+                    <input type="text" id="client_name" required placeholder="Digite seu nome completo" class="w-full px-4 py-3 rounded-xl bg-brand-bg border border-stone-200 focus:outline-none focus:border-brand-sage text-sm text-brand-text transition-colors">
+                </div>
+
+                <div class="grid sm:grid-cols-2 gap-4">
+                    <div>
+                        <label for="client_email" class="block text-xs font-semibold uppercase tracking-wider text-brand-text mb-2">E-mail</label>
+                        <input type="email" id="client_email" required placeholder="seu@email.com" class="w-full px-4 py-3 rounded-xl bg-brand-bg border border-stone-200 focus:outline-none focus:border-brand-sage text-sm text-brand-text transition-colors">
+                    </div>
+                    <div>
+                        <label for="client_phone" class="block text-xs font-semibold uppercase tracking-wider text-brand-text mb-2">WhatsApp / Telefone</label>
+                        <input type="tel" id="client_phone" required placeholder="(11) 99999-9999" class="w-full px-4 py-3 rounded-xl bg-brand-bg border border-stone-200 focus:outline-none focus:border-brand-sage text-sm text-brand-text transition-colors">
+                    </div>
+                </div>
+
+                <div>
+                    <label for="service_type" class="block text-xs font-semibold uppercase tracking-wider text-brand-text mb-2">Serviço Pretendido</label>
+                    <select id="service_type" required class="w-full px-4 py-3 rounded-xl bg-brand-bg border border-stone-200 focus:outline-none focus:border-brand-sage text-sm text-brand-text transition-colors">
+                        <option value="Avaliação Psicopedagógica">Avaliação Psicopedagógica</option>
+                        <option value="Acompanhamento e Intervenção">Acompanhamento e Intervenção</option>
+                        <option value="AEE / Atendimento Especializado">AEE / Atendimento Especializado</option>
+                        <option value="Reforço Escolar">Reforço Escolar</option>
+                    </select>
+                </div>
+
+                <div class="grid sm:grid-cols-2 gap-4">
+                    <div>
+                        <label for="appointment_date" class="block text-xs font-semibold uppercase tracking-wider text-brand-text mb-2">Data Pretendida</label>
+                        <input type="date" id="appointment_date" required class="w-full px-4 py-3 rounded-xl bg-brand-bg border border-stone-200 focus:outline-none focus:border-brand-sage text-sm text-brand-text transition-colors">
+                    </div>
+                    <div>
+                        <label for="appointment_time" class="block text-xs font-semibold uppercase tracking-wider text-brand-text mb-2">Horário Preferencial</label>
+                        <select id="appointment_time" required class="w-full px-4 py-3 rounded-xl bg-brand-bg border border-stone-200 focus:outline-none focus:border-brand-sage text-sm text-brand-text transition-colors">
+                            <option value="08:00">08:00</option>
+                            <option value="09:30">09:30</option>
+                            <option value="11:00">11:00</option>
+                            <option value="14:00">14:00</option>
+                            <option value="15:30">15:30</option>
+                            <option value="17:00">17:00</option>
+                        </select>
+                    </div>
+                </div>
+
+                <button type="submit" id="submit-btn" class="w-full bg-brand-sage text-white font-semibold py-4 rounded-xl hover:bg-brand-sage-dark transition-colors duration-200">
+                    Confirmar Agendamento
+                </button>
+            </form>
+
+            <div id="status-message" class="hidden mt-6 p-4 rounded-xl text-center text-sm font-medium"></div>
+        </div>
+    </main>
+
+    <!-- RODAPÉ -->
+    <footer class="py-6 border-t border-stone-200/60 text-center text-xs text-brand-muted">
+        &copy; Espaço Prado — Todos os direitos reservados.
+    </footer>
+
+    <!-- SCRIPT DE INTEGRAÇÃO SUPABASE -->
+    <script>
+        // Substitua 'https://SEU-PROJETO.supabase.co' com o Project URL do seu painel Supabase
+        const SUPABASE_URL = 'https://SEU-PROJETO.supabase.co';
+        
+        // Chave pública (Publishable Key)
+        const SUPABASE_KEY = 'sb_publishable_FQOqLRbtH2ADOUYIbn7ggg_xVVbmVwj';
+        
+        const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+        const form = document.getElementById('booking-form');
+        const submitBtn = document.getElementById('submit-btn');
+        const statusMsg = document.getElementById('status-message');
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            submitBtn.disabled = true;
+            submitBtn.innerText = "Enviando agendamento...";
+
+            const payload = {
+                client_name: document.getElementById('client_name').value,
+                client_email: document.getElementById('client_email').value,
+                client_phone: document.getElementById('client_phone').value,
+                service_type: document.getElementById('service_type').value,
+                appointment_date: document.getElementById('appointment_date').value,
+                appointment_time: document.getElementById('appointment_time').value
+            };
+
+            const { data, error } = await _supabase.from('appointments').insert([payload]);
+
+            statusMsg.classList.remove('hidden', 'bg-green-100', 'text-green-800', 'bg-red-100', 'text-red-800');
+
+            if (error) {
+                console.error(error);
+                statusMsg.classList.add('bg-red-100', 'text-red-800');
+                statusMsg.innerText = "Erro ao efetuar o agendamento. Verifique se preencheu todos os campos corretamente.";
+                submitBtn.disabled = false;
+                submitBtn.innerText = "Confirmar Agendamento";
+            } else {
+                statusMsg.classList.add('bg-green-100', 'text-green-800');
+                statusMsg.innerText = "Agendamento realizado com sucesso! Entraremos em contato em breve para confirmação.";
+                form.reset();
+                submitBtn.disabled = false;
+                submitBtn.innerText = "Confirmar Agendamento";
+            }
+        });
+    </script>
+</body>
+</html>
