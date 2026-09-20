@@ -68,14 +68,24 @@
 
     <!-- PAINEL ADMINISTRATIVO (Oculto até ao login) -->
     <main id="dashboard-section" class="hidden max-w-6xl mx-auto px-6 py-10 w-full flex-grow">
-        <div class="flex justify-between items-center mb-6">
+        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
             <div>
                 <h1 class="font-bold text-2xl text-brand-text">Agendamentos Recebidos</h1>
                 <p class="text-brand-muted text-sm">Consulte as solicitações de consultas efetuadas no site.</p>
             </div>
-            <button onclick="loadAppointments()" class="px-4 py-2 bg-stone-100 border border-stone-200 rounded-xl text-xs font-semibold hover:bg-stone-200 transition-colors">
-                🔄 Atualizar
-            </button>
+            
+            <!-- AÇÕES SUPERIORES: BOTÃO NOVO AGENDAMENTO + RECARREGAR -->
+            <div class="flex items-center gap-3">
+                <button id="open-modal-btn" class="bg-brand-sage text-white px-4 py-2 rounded-xl text-xs font-semibold hover:bg-brand-sage-dark transition-colors flex items-center gap-2">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+                    </svg>
+                    Novo Agendamento
+                </button>
+                <button onclick="loadAppointments()" class="px-4 py-2 bg-stone-100 border border-stone-200 rounded-xl text-xs font-semibold hover:bg-stone-200 transition-colors">
+                    🔄 Atualizar
+                </button>
+            </div>
         </div>
 
         <!-- TABELA DE AGENDAMENTOS -->
@@ -101,12 +111,68 @@
         </div>
     </main>
 
+    <!-- MODAL DE CRIAÇÃO DE NOVO AGENDAMENTO -->
+    <div id="booking-modal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white w-full max-w-lg rounded-2xl shadow-xl border border-stone-200 overflow-hidden">
+            <div class="flex justify-between items-center px-6 py-4 border-b border-stone-100">
+                <h3 class="font-bold text-lg text-brand-text">Novo Agendamento Manual</h3>
+                <button id="close-modal-btn" class="text-stone-400 hover:text-stone-600 text-xl font-bold">&times;</button>
+            </div>
+
+            <form id="admin-booking-form" class="p-6 space-y-4">
+                <div>
+                    <label class="block text-xs font-semibold text-brand-text uppercase mb-1">Nome do Cliente</label>
+                    <input type="text" id="admin_client_name" required class="w-full px-4 py-2.5 rounded-xl border border-stone-200 focus:outline-none focus:border-brand-sage text-sm" placeholder="Nome completo">
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-semibold text-brand-text uppercase mb-1">E-mail</label>
+                        <input type="email" id="admin_client_email" required class="w-full px-4 py-2.5 rounded-xl border border-stone-200 focus:outline-none focus:border-brand-sage text-sm" placeholder="email@exemplo.com">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-brand-text uppercase mb-1">Telefone / WhatsApp</label>
+                        <input type="tel" id="admin_client_phone" required class="w-full px-4 py-2.5 rounded-xl border border-stone-200 focus:outline-none focus:border-brand-sage text-sm" placeholder="(00) 00000-0000">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold text-brand-text uppercase mb-1">Tipo de Serviço</label>
+                    <select id="admin_service_type" required class="w-full px-4 py-2.5 rounded-xl border border-stone-200 focus:outline-none focus:border-brand-sage text-sm bg-white">
+                        <option value="Avaliação Psicopedagógica">Avaliação Psicopedagógica</option>
+                        <option value="Intervenção Psicopedagógica">Intervenção Psicopedagógica</option>
+                        <option value="Orientação Parental">Orientação Parental</option>
+                        <option value="Consultoria Escolar">Consultoria Escolar</option>
+                    </select>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-semibold text-brand-text uppercase mb-1">Data</label>
+                        <input type="date" id="admin_appointment_date" required class="w-full px-4 py-2.5 rounded-xl border border-stone-200 focus:outline-none focus:border-brand-sage text-sm">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-brand-text uppercase mb-1">Horário</label>
+                        <input type="time" id="admin_appointment_time" required class="w-full px-4 py-2.5 rounded-xl border border-stone-200 focus:outline-none focus:border-brand-sage text-sm">
+                    </div>
+                </div>
+
+                <div id="modal-status-msg" class="hidden p-3 rounded-xl text-xs font-medium"></div>
+
+                <div class="flex justify-end gap-3 pt-3 border-t border-stone-100">
+                    <button type="button" id="cancel-modal-btn" class="px-4 py-2 rounded-xl text-xs font-semibold border border-stone-200 hover:bg-stone-50">Cancelar</button>
+                    <button type="submit" id="admin-submit-btn" class="bg-brand-sage text-white px-5 py-2 rounded-xl text-xs font-semibold hover:bg-brand-sage-dark transition-colors">Salvar Agendamento</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <footer class="py-6 border-t border-stone-200 text-center text-xs text-brand-muted bg-white">
         &copy; Espaço Prado — Área de Gestão
     </footer>
 
     <script>
-        const SUPABASE_URL = 'https://xmuyymsawzktgqvpqaks.supabase.co';  
+        const SUPABASE_URL = 'https://xmuyymsawzktgqvpqaks.supabase.co';
         const SUPABASE_KEY = 'sb_publishable_FQOqLRbtH2ADOUYIbn7ggg_xVVbmVwj';
         const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
@@ -116,6 +182,20 @@
         const userEmail = document.getElementById('user-email');
         const loginForm = document.getElementById('login-form');
         const loginError = document.getElementById('login-error');
+
+        // Elementos da Modal
+        const modal = document.getElementById('booking-modal');
+        const openModalBtn = document.getElementById('open-modal-btn');
+        const closeModalBtn = document.getElementById('close-modal-btn');
+        const cancelModalBtn = document.getElementById('cancel-modal-btn');
+        const adminForm = document.getElementById('admin-booking-form');
+        const adminSubmitBtn = document.getElementById('admin-submit-btn');
+        const modalStatusMsg = document.getElementById('modal-status-msg');
+
+        // Controlo da Modal
+        openModalBtn.addEventListener('click', () => modal.classList.remove('hidden'));
+        closeModalBtn.addEventListener('click', () => modal.classList.add('hidden'));
+        cancelModalBtn.addEventListener('click', () => modal.classList.add('hidden'));
 
         // Verificar Sessão ao Carregar a Página
         async function checkSession() {
@@ -203,11 +283,52 @@
                         </span>
                     </td>
                     <td class="py-4 px-4 text-xs text-stone-400">
-                        ${new Date(item.created_at).toLocaleDateString('pt-PT')}
+                        ${new Date(item.created_at).toLocaleDateString('pt-BR')}
                     </td>
                 </tr>
             `).join('');
         }
+
+        // Envio do Agendamento Manual via Admin
+        adminForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            adminSubmitBtn.disabled = true;
+            adminSubmitBtn.innerText = "A guardar...";
+
+            const payload = {
+                client_name: document.getElementById('admin_client_name').value,
+                client_email: document.getElementById('admin_client_email').value,
+                client_phone: document.getElementById('admin_client_phone').value,
+                service_type: document.getElementById('admin_service_type').value,
+                appointment_date: document.getElementById('admin_appointment_date').value,
+                appointment_time: document.getElementById('admin_appointment_time').value
+            };
+
+            const { data, error } = await _supabase.from('appointments').insert([payload]);
+
+            modalStatusMsg.classList.remove('hidden', 'bg-green-100', 'text-green-800', 'bg-red-100', 'text-red-800');
+
+            if (error) {
+                console.error('Erro ao guardar agendamento:', error);
+                modalStatusMsg.classList.add('bg-red-100', 'text-red-800');
+                modalStatusMsg.innerText = "Erro ao efetuar o agendamento.";
+                adminSubmitBtn.disabled = false;
+                adminSubmitBtn.innerText = "Salvar Agendamento";
+            } else {
+                modalStatusMsg.classList.add('bg-green-100', 'text-green-800');
+                modalStatusMsg.innerText = "Agendamento criado com sucesso!";
+
+                setTimeout(() => {
+                    modal.classList.add('hidden');
+                    adminForm.reset();
+                    modalStatusMsg.classList.add('hidden');
+                    adminSubmitBtn.disabled = false;
+                    adminSubmitBtn.innerText = "Salvar Agendamento";
+                    loadAppointments();
+                }, 1000);
+            }
+        });
 
         checkSession();
     </script>
