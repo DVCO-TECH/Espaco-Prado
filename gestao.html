@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestão — Espaço Prado</title>
+    <link rel="icon" type="image/svg+xml" href="logo.svg">
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'brand-bg': '#FDFBF7',
+                        'brand-card': '#FFFFFF',
+                        'brand-text': '#2D3A34',
+                        'brand-muted': '#5C6B63',
+                        'brand-sage': { DEFAULT: '#7E998A', dark: '#688273' }
+                    },
+                    fontFamily: { 'body': ['Plus Jakarta Sans', 'sans-serif'] }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-brand-bg text-brand-text font-body min-h-screen flex flex-col justify-between antialiased">
+
+    <!-- CABEÇALHO -->
+    <header class="py-5 border-b border-stone-200/60 bg-white">
+        <div class="max-w-6xl mx-auto px-6 flex justify-between items-center">
+            <a href="index.html" class="flex items-center gap-2">
+                <img src="logo.svg" alt="Espaço Prado" class="h-9 w-auto">
+                <span class="font-bold text-lg tracking-tight">Painel de Gestão</span>
+            </a>
+            <div id="user-area" class="hidden flex items-center gap-4 text-sm">
+                <span id="user-email" class="text-brand-muted"></span>
+                <button onclick="logout()" class="text-red-600 font-medium hover:underline">Sair</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- ÁREA DE LOGIN (Visível por padrão) -->
+    <main id="login-section" class="max-w-md mx-auto px-6 py-20 w-full">
+        <div class="bg-white p-8 rounded-2xl border border-stone-200 shadow-sm">
+            <h1 class="font-bold text-2xl text-brand-text mb-2">Acesso Restrito</h1>
+            <p class="text-brand-muted text-sm mb-6">Introduza as suas credenciais para aceder aos agendamentos.</p>
+
+            <form id="login-form" class="space-y-4">
+                <div>
+                    <label class="block text-xs font-semibold uppercase tracking-wider text-brand-text mb-1">E-mail</label>
+                    <input type="email" id="email" required class="w-full px-4 py-2.5 rounded-xl bg-brand-bg border border-stone-200 focus:outline-none focus:border-brand-sage text-sm">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold uppercase tracking-wider text-brand-text mb-1">Palavra-passe</label>
+                    <input type="password" id="password" required class="w-full px-4 py-2.5 rounded-xl bg-brand-bg border border-stone-200 focus:outline-none focus:border-brand-sage text-sm">
+                </div>
+                <button type="submit" id="login-btn" class="w-full bg-brand-sage text-white font-semibold py-3 rounded-xl hover:bg-brand-sage-dark transition-colors">
+                    Entrar
+                </button>
+            </form>
+            <div id="login-error" class="hidden mt-4 p-3 bg-red-100 text-red-800 text-xs rounded-xl text-center"></div>
+        </div>
+    </main>
+
+    <!-- PAINEL ADMINISTRATIVO (Oculto até ao login) -->
+    <main id="dashboard-section" class="hidden max-w-6xl mx-auto px-6 py-10 w-full flex-grow">
+        <div class="flex justify-between items-center mb-6">
+            <div>
+                <h1 class="font-bold text-2xl text-brand-text">Agendamentos Recebidos</h1>
+                <p class="text-brand-muted text-sm">Consulte as solicitações de consultas efetuadas no site.</p>
+            </div>
+            <button onclick="loadAppointments()" class="px-4 py-2 bg-stone-100 border border-stone-200 rounded-xl text-xs font-semibold hover:bg-stone-200 transition-colors">
+                🔄 Atualizar
+            </button>
+        </div>
+
+        <!-- TABELA DE AGENDAMENTOS -->
+        <div class="bg-white rounded-2xl border border-stone-200 overflow-hidden shadow-sm">
+            <div class="overflow-x-auto">
+                <table class="w-full text-left text-sm">
+                    <thead class="bg-stone-50 border-b border-stone-200 text-xs font-semibold uppercase tracking-wider text-brand-muted">
+                        <tr>
+                            <th class="py-3.5 px-4">Data/Hora Agendada</th>
+                            <th class="py-3.5 px-4">Cliente</th>
+                            <th class="py-3.5 px-4">Contacto</th>
+                            <th class="py-3.5 px-4">Serviço</th>
+                            <th class="py-3.5 px-4">Solicitado em</th>
+                        </tr>
+                    </thead>
+                    <tbody id="appointments-list" class="divide-y divide-stone-100">
+                        <tr>
+                            <td colspan="5" class="py-8 text-center text-brand-muted text-sm">A carregar agendamentos...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+
+    <footer class="py-6 border-t border-stone-200 text-center text-xs text-brand-muted bg-white">
+        &copy; Espaço Prado — Área de Gestão
+    </footer>
+
+    <script>
+        const SUPABASE_URL = 'https://SEU-PROJETO.supabase.co';
+        const SUPABASE_KEY = 'sb_publishable_FQOqLRbtH2ADOUYIbn7ggg_xVVbmVwj';
+        const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+        const loginSection = document.getElementById('login-section');
+        const dashboardSection = document.getElementById('dashboard-section');
+        const userArea = document.getElementById('user-area');
+        const userEmail = document.getElementById('user-email');
+        const loginForm = document.getElementById('login-form');
+        const loginError = document.getElementById('login-error');
+
+        // Verificar Sessão ao Carregar a Página
+        async function checkSession() {
+            const { data: { session } } = await _supabase.auth.getSession();
+            if (session) {
+                showDashboard(session.user);
+            } else {
+                showLogin();
+            }
+        }
+
+        // Fazer Login
+        loginForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            loginError.classList.add('hidden');
+            
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+
+            const { data, error } = await _supabase.auth.signInWithPassword({ email, password });
+
+            if (error) {
+                loginError.innerText = "E-mail ou palavra-passe incorretos.";
+                loginError.classList.remove('hidden');
+            } else {
+                showDashboard(data.user);
+            }
+        });
+
+        // Exibir o Painel
+        function showDashboard(user) {
+            loginSection.classList.add('hidden');
+            dashboardSection.classList.remove('hidden');
+            userArea.classList.remove('hidden');
+            userEmail.innerText = user.email;
+            loadAppointments();
+        }
+
+        // Exibir o Login
+        function showLogin() {
+            loginSection.classList.remove('hidden');
+            dashboardSection.classList.add('hidden');
+            userArea.classList.add('hidden');
+        }
+
+        // Fazer Logout
+        async function logout() {
+            await _supabase.auth.signOut();
+            showLogin();
+        }
+
+        // Carregar Agendamentos do Supabase
+        async function loadAppointments() {
+            const listContainer = document.getElementById('appointments-list');
+            listContainer.innerHTML = '<tr><td colspan="5" class="py-8 text-center text-brand-muted text-sm">A carregar agendamentos...</td></tr>';
+
+            const { data, error } = await _supabase
+                .from('appointments')
+                .select('*')
+                .order('appointment_date', { ascending: true });
+
+            if (error) {
+                listContainer.innerHTML = '<tr><td colspan="5" class="py-8 text-center text-red-600 text-sm">Erro ao carregar os dados.</td></tr>';
+                return;
+            }
+
+            if (data.length === 0) {
+                listContainer.innerHTML = '<tr><td colspan="5" class="py-8 text-center text-brand-muted text-sm">Nenhum agendamento encontrado.</td></tr>';
+                return;
+            }
+
+            listContainer.innerHTML = data.map(item => `
+                <tr class="hover:bg-stone-50/80 transition-colors">
+                    <td class="py-4 px-4 font-semibold text-brand-sage-dark">
+                        ${item.appointment_date} <span class="text-xs font-normal text-stone-500">às ${item.appointment_time}</span>
+                    </td>
+                    <td class="py-4 px-4 font-medium">${item.client_name}</td>
+                    <td class="py-4 px-4 text-xs">
+                        <div>📞 ${item.client_phone}</div>
+                        <div class="text-stone-400">${item.client_email}</div>
+                    </td>
+                    <td class="py-4 px-4">
+                        <span class="px-2.5 py-1 bg-stone-100 text-stone-700 rounded-lg text-xs font-medium">
+                            ${item.service_type}
+                        </span>
+                    </td>
+                    <td class="py-4 px-4 text-xs text-stone-400">
+                        ${new Date(item.created_at).toLocaleDateString('pt-PT')}
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        checkSession();
+    </script>
+</body>
+</html>
