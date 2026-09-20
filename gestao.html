@@ -17,7 +17,7 @@
         <i class="fa-solid fa-brain text-2xl text-indigo-300"></i>
         <h1 class="text-xl font-bold">Painel de Gestão Clínica</h1>
       </div>
-      <button id="btnLogout" class="text-sm bg-indigo-800 hover:bg-indigo-700 px-3 py-1.5 rounded-lg transition">
+      <button id="btnLogout" onclick="logout()" class="text-sm bg-indigo-800 hover:bg-indigo-700 px-3 py-1.5 rounded-lg transition">
         <i class="fa-solid fa-right-from-bracket mr-1"></i> Sair
       </button>
     </div>
@@ -74,7 +74,6 @@
         </button>
       </div>
       <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <!-- Lista de Pacientes à Esquerda -->
         <div class="bg-white rounded-xl shadow-sm p-4 border border-slate-200 h-[600px] overflow-y-auto">
           <h3 class="font-semibold text-sm text-slate-500 mb-3 uppercase">Selecione um Paciente</h3>
           <div id="listaPacientes" class="space-y-2">
@@ -82,7 +81,6 @@
           </div>
         </div>
 
-        <!-- Detalhes do Paciente Selecionado à Direita -->
         <div id="detalhePaciente" class="md:col-span-2 bg-white rounded-xl shadow-sm p-6 border border-slate-200 flex flex-col justify-center items-center text-slate-400">
           <i class="fa-solid fa-id-card text-5xl mb-2"></i>
           <p>Selecione um paciente na lista para ver o prontuário e PII.</p>
@@ -92,7 +90,6 @@
 
     <!-- SEÇÃO 3: FINANCEIRO -->
     <section id="sec-financeiro" class="space-y-6 hidden">
-      <!-- Cards de Resumo -->
       <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm flex items-center justify-between">
           <div>
@@ -123,7 +120,6 @@
         </div>
       </div>
 
-      <!-- Tabela Financeira -->
       <div class="bg-white rounded-xl shadow-sm overflow-hidden border border-slate-200">
         <div class="p-4 border-b flex justify-between items-center">
           <h3 class="font-bold text-slate-700">Lançamentos Financeiros</h3>
@@ -135,7 +131,6 @@
           <thead class="bg-slate-50 text-slate-500 text-xs uppercase font-semibold border-b">
             <tr>
               <th class="p-4">Descrição</th>
-              <th class="p-4">Paciente</th>
               <th class="p-4">Vencimento</th>
               <th class="p-4">Valor</th>
               <th class="p-4">Status</th>
@@ -151,10 +146,68 @@
 
   </main>
 
+  <!-- MODAL: NOVO AGENDAMENTO -->
+  <div id="modalAgendamento" class="fixed inset-0 bg-black/50 hidden items-center justify-center z-50 p-4">
+    <div class="bg-white rounded-xl shadow-xl w-full max-w-md p-6">
+      <h3 class="text-lg font-bold mb-4">Novo Agendamento</h3>
+      <form id="formAgendamento" class="space-y-4">
+        <div>
+          <label class="block text-xs font-semibold text-slate-600 mb-1">Nome do Paciente</label>
+          <input type="text" id="agNome" required class="w-full border p-2 rounded-lg text-sm" placeholder="Nome da criança/aluno">
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-slate-600 mb-1">Responsável</label>
+          <input type="text" id="agResponsavel" class="w-full border p-2 rounded-lg text-sm" placeholder="Nome do pai/mãe">
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-semibold text-slate-600 mb-1">Telefone</label>
+            <input type="text" id="agTelefone" required class="w-full border p-2 rounded-lg text-sm" placeholder="(11) 99999-9999">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-600 mb-1">Data e Hora</label>
+            <input type="datetime-local" id="agData" required class="w-full border p-2 rounded-lg text-sm">
+          </div>
+        </div>
+        <div class="flex justify-end gap-2 pt-2">
+          <button type="button" onclick="fecharModal('modalAgendamento')" class="px-4 py-2 border rounded-lg text-sm">Cancelar</button>
+          <button type="submit" class="px-4 py-2 bg-indigo-600 text-white rounded-lg text-sm font-medium">Agendar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL: NOVO PACIENTE -->
+  <div id="modalPaciente" class="fixed inset-0 bg-black/50 hidden items-center justify-center z-50 p-4">
+    <div class="bg-white rounded-xl shadow-xl w-full max-w-md p-6">
+      <h3 class="text-lg font-bold mb-4">Cadastrar Paciente</h3>
+      <form id="formPaciente" class="space-y-4">
+        <div>
+          <label class="block text-xs font-semibold text-slate-600 mb-1">Nome Completo</label>
+          <input type="text" id="pacNome" required class="w-full border p-2 rounded-lg text-sm">
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-semibold text-slate-600 mb-1">Responsável</label>
+            <input type="text" id="pacResponsavel" class="w-full border p-2 rounded-lg text-sm">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-600 mb-1">Telefone</label>
+            <input type="text" id="pacTelefone" class="w-full border p-2 rounded-lg text-sm">
+          </div>
+        </div>
+        <div class="flex justify-end gap-2 pt-2">
+          <button type="button" onclick="fecharModal('modalPaciente')" class="px-4 py-2 border rounded-lg text-sm">Cancelar</button>
+          <button type="submit" class="px-4 py-2 bg-indigo-600 text-white rounded-lg text-sm font-medium">Salvar Paciente</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
   <!-- MODAL: NOVO LANÇAMENTO FINANCEIRO -->
   <div id="modalLancamento" class="fixed inset-0 bg-black/50 hidden items-center justify-center z-50 p-4">
     <div class="bg-white rounded-xl shadow-xl w-full max-w-md p-6">
-      <h3 class="text-lg font-bold mb-4">Novo Lançamento</h3>
+      <h3 class="text-lg font-bold mb-4">Novo Lançamento Financeiro</h3>
       <form id="formLancamento" class="space-y-4">
         <div>
           <label class="block text-xs font-semibold text-slate-600 mb-1">Descrição</label>
@@ -172,21 +225,25 @@
         </div>
         <div class="flex justify-end gap-2 pt-2">
           <button type="button" onclick="fecharModal('modalLancamento')" class="px-4 py-2 border rounded-lg text-sm">Cancelar</button>
-          <button type="submit" class="px-4 py-2 bg-indigo-600 text-white rounded-lg text-sm font-medium">Salvar</button>
+          <button type="submit" class="px-4 py-2 bg-indigo-600 text-white rounded-lg text-sm font-medium">Salvar Lançamento</button>
         </div>
       </form>
     </div>
   </div>
 
   <script>
-    // Configuração Supabase (Substitua pelas suas credenciais)
     const SUPABASE_URL = 'https://xmuyymsawzktgqvpqaks.supabase.co';
     const SUPABASE_KEY = 'sb_publishable_FQOqLRbtH2ADOUYIbn7ggg_xVVbmVwj';
     const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
     let pacienteSelecionado = null;
 
-    // --- CONTROLE DE ABAS ---
+    // --- CARREGAMENTO INICIAL ---
+    window.addEventListener('DOMContentLoaded', () => {
+      carregarAgendamentos();
+    });
+
+    // --- CONTROLE DE ABAS E MODAIS ---
     function mudarAba(aba) {
       document.querySelectorAll('section').forEach(s => s.classList.add('hidden'));
       document.querySelectorAll('.aba-btn').forEach(b => {
@@ -199,12 +256,166 @@
       btnAtivo.classList.add('text-indigo-600', 'border-b-2', 'border-indigo-600');
       btnAtivo.classList.remove('text-slate-500');
 
-      if (aba === 'financeiro') carregarFinanceiro();
+      if (aba === 'agendamentos') carregarAgendamentos();
       if (aba === 'pacientes') carregarPacientes();
+      if (aba === 'financeiro') carregarFinanceiro();
     }
 
-    function abrirModal(id) { document.getElementById(id).classList.replace('hidden', 'flex'); }
-    function fecharModal(id) { document.getElementById(id).classList.replace('flex', 'hidden'); }
+    function abrirModal(id) {
+      const modal = document.getElementById(id);
+      if (modal) {
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
+      }
+    }
+    
+    function fecharModal(id) {
+      const modal = document.getElementById(id);
+      if (modal) {
+        modal.classList.remove('flex');
+        modal.classList.add('hidden');
+      }
+    }
+
+    async function logout() {
+      await supabase.auth.signOut();
+      window.location.href = 'index.html';
+    }
+
+    // --- AGENDAMENTOS ---
+    async function carregarAgendamentos() {
+      const { data, error } = await supabase.from('agendamentos').select('*').order('data_agendamento', { ascending: true });
+      if (error) {
+        console.error('Erro ao carregar agendamentos:', error);
+        return;
+      }
+
+      const tbody = document.getElementById('listaAgendamentos');
+      tbody.innerHTML = '';
+
+      if (!data || data.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="5" class="p-4 text-center text-slate-400">Nenhum agendamento encontrado.</td></tr>`;
+        return;
+      }
+
+      data.forEach(item => {
+        tbody.innerHTML += `
+          <tr class="hover:bg-slate-50">
+            <td class="p-4 font-medium text-slate-800">${item.nome_paciente}</td>
+            <td class="p-4 text-slate-500">${item.nome_responsavel || '-'}</td>
+            <td class="p-4 text-slate-500">${new Date(item.data_agendamento).toLocaleString('pt-BR')}</td>
+            <td class="p-4">
+              <span class="px-2.5 py-1 rounded-full text-xs font-semibold ${item.status === 'confirmado' ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-700'}">
+                ${(item.status || 'pendente').toUpperCase()}
+              </span>
+            </td>
+            <td class="p-4 text-right">
+              <button onclick="confirmarAgendamento('${item.id}')" class="text-xs bg-indigo-50 text-indigo-600 px-2.5 py-1 rounded-lg border border-indigo-200 hover:bg-indigo-100 transition">Confirmar</button>
+            </td>
+          </tr>
+        `;
+      });
+    }
+
+    document.getElementById('formAgendamento').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const nome_paciente = document.getElementById('agNome').value;
+      const nome_responsavel = document.getElementById('agResponsavel').value;
+      const telefone = document.getElementById('agTelefone').value;
+      const data_agendamento = document.getElementById('agData').value;
+
+      const { error } = await supabase.from('agendamentos').insert([{ nome_paciente, nome_responsavel, telefone, data_agendamento, status: 'confirmado' }]);
+      if (error) alert('Erro ao agendar: ' + error.message);
+      else {
+        fecharModal('modalAgendamento');
+        document.getElementById('formAgendamento').reset();
+        carregarAgendamentos();
+      }
+    });
+
+    async function confirmarAgendamento(id) {
+      await supabase.from('agendamentos').update({ status: 'confirmado' }).eq('id', id);
+      carregarAgendamentos();
+    }
+
+    // --- PACIENTES E PRONTUÁRIOS ---
+    async function carregarPacientes() {
+      const { data, error } = await supabase.from('alunos').select('*').order('nome');
+      if (error) return;
+
+      const container = document.getElementById('listaPacientes');
+      container.innerHTML = '';
+
+      if (!data || data.length === 0) {
+        container.innerHTML = `<p class="text-xs text-slate-400 italic">Nenhum paciente cadastrado.</p>`;
+        return;
+      }
+
+      data.forEach(p => {
+        container.innerHTML += `
+          <div onclick="selecionarPaciente('${p.id}', '${p.nome}')" class="p-3 border rounded-lg hover:bg-indigo-50 cursor-pointer transition flex items-center justify-between">
+            <span class="font-medium text-slate-700">${p.nome}</span>
+            <i class="fa-solid fa-chevron-right text-xs text-slate-400"></i>
+          </div>
+        `;
+      });
+    }
+
+    document.getElementById('formPaciente').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const nome = document.getElementById('pacNome').value;
+      const responsavel = document.getElementById('pacResponsavel').value;
+      const telefone = document.getElementById('pacTelefone').value;
+
+      const { error } = await supabase.from('alunos').insert([{ nome, responsavel, telefone }]);
+      if (error) alert('Erro ao salvar paciente: ' + error.message);
+      else {
+        fecharModal('modalPaciente');
+        document.getElementById('formPaciente').reset();
+        carregarPacientes();
+      }
+    });
+
+    async function selecionarPaciente(id, nome) {
+      pacienteSelecionado = id;
+      const detalhe = document.getElementById('detalhePaciente');
+      
+      const { data: prontuarios } = await supabase.from('prontuarios').select('*').eq('paciente_id', id).order('data_sessao', { ascending: false });
+
+      detalhe.className = "md:col-span-2 bg-white rounded-xl shadow-sm p-6 border border-slate-200 block space-y-6";
+      detalhe.innerHTML = `
+        <div class="border-b pb-4 flex justify-between items-center">
+          <div>
+            <h2 class="text-xl font-bold text-slate-800">${nome}</h2>
+            <p class="text-xs text-slate-400">Ficha Clínica e Histórico Pedagógico</p>
+          </div>
+          <button onclick="adicionarEvolucao('${id}')" class="bg-indigo-600 hover:bg-indigo-700 text-white text-xs px-3 py-1.5 rounded-lg transition">+ Nova Evolução</button>
+        </div>
+
+        <div>
+          <h3 class="font-bold text-slate-700 mb-3 text-sm">Histórico de Sessões (Evolução)</h3>
+          <div class="space-y-3 max-h-80 overflow-y-auto">
+            ${prontuarios && prontuarios.length > 0 ? prontuarios.map(pr => `
+              <div class="p-3 bg-slate-50 border rounded-lg text-sm">
+                <div class="flex justify-between text-xs text-slate-400 mb-1">
+                  <span>${new Date(pr.data_sessao).toLocaleString('pt-BR')}</span>
+                </div>
+                <p class="text-slate-700 font-medium">${pr.resumo_sessao}</p>${pr.observacoes_comportamento ? `<p class="text-xs text-slate-500 mt-1"><strong>Obs:</strong> ${pr.observacoes_comportamento}</p>` : ''}
+              </div>
+            `).join('') : '<p class="text-xs text-slate-400 italic">Nenhuma evolução registrada ainda.</p>'}
+          </div>
+        </div>
+      `;
+    }
+
+    async function adicionarEvolucao(pacienteId) {
+      const resumo = prompt("Resumo da Sessão / Atividades Realizadas:");
+      if (!resumo) return;
+      const obs = prompt("Observações de Comportamento (Opcional):");
+
+      const { error } = await supabase.from('prontuarios').insert([{ paciente_id: pacienteId, resumo_sessao: resumo, observacoes_comportamento: obs }]);
+      if (!error) selecionarPaciente(pacienteId, document.querySelector('#detalhePaciente h2').innerText);
+    }
 
     // --- FINANCEIRO ---
     async function carregarFinanceiro() {
@@ -217,32 +428,35 @@
       let totalPago = 0;
       let totalPendente = 0;
 
-      data.forEach(item => {
-        if (item.status === 'pago') totalPago += Number(item.valor);
-        else totalPendente += Number(item.valor);
+      if (!data || data.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="5" class="p-4 text-center text-slate-400">Nenhum lançamento financeiro.</td></tr>`;
+      } else {
+        data.forEach(item => {
+          if (item.status === 'pago') totalPago += Number(item.valor);
+          else totalPendente += Number(item.valor);
 
-        tbody.innerHTML += `
-          <tr class="hover:bg-slate-50">
-            <td class="p-4 font-medium">${item.descricao}</td>
-            <td class="p-4 text-slate-500">-</td>
-            <td class="p-4 text-slate-500">${new Date(item.data_vencimento).toLocaleDateString('pt-BR')}</td>
-            <td class="p-4 font-semibold">R$ ${Number(item.valor).toFixed(2)}</td>
-            <td class="p-4">
-              <span class="px-2.5 py-1 rounded-full text-xs font-semibold ${item.status === 'pago' ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-700'}">
-                ${item.status.toUpperCase()}
-              </span>
-            </td>
-            <td class="p-4 text-right space-x-2">
-              ${item.status !== 'pago' ? `<button onclick="marcarComoPago('${item.id}')" class="text-xs bg-emerald-600 text-white px-2 py-1 rounded">Dar Baixa</button>` : ''}
-              <button onclick="gerarRecibo('${item.descricao}', '${item.valor}')" class="text-xs border border-slate-300 text-slate-600 px-2 py-1 rounded"><i class="fa-solid fa-print"></i> Recibo</button>
-            </td>
-          </tr>
-        `;
-      });
+          tbody.innerHTML += `
+            <tr class="hover:bg-slate-50">
+              <td class="p-4 font-medium">${item.descricao}</td>
+              <td class="p-4 text-slate-500">${new Date(item.data_vencimento).toLocaleDateString('pt-BR')}</td>
+              <td class="p-4 font-semibold">R$ ${Number(item.valor).toFixed(2)}</td>
+              <td class="p-4">
+                <span class="px-2.5 py-1 rounded-full text-xs font-semibold ${item.status === 'pago' ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-700'}">
+                  ${item.status.toUpperCase()}
+                </span>
+              </td>
+              <td class="p-4 text-right space-x-2">
+                ${item.status !== 'pago' ? `<button onclick="marcarComoPago('${item.id}')" class="text-xs bg-emerald-600 text-white px-2 py-1 rounded hover:bg-emerald-700">Dar Baixa</button>` : ''}
+                <button onclick="gerarRecibo('${item.descricao}', '${item.valor}')" class="text-xs border border-slate-300 text-slate-600 px-2 py-1 rounded hover:bg-slate-100"><i class="fa-solid fa-print"></i> Recibo</button>
+              </td>
+            </tr>
+          `;
+        });
+      }
 
       document.getElementById('txtReceitas').innerText = `R$ ${totalPago.toFixed(2)}`;
       document.getElementById('txtPendentes').innerText = `R$ ${totalPendente.toFixed(2)}`;
-      document.getElementById('txtTotalLancamentos').innerText = data.length;
+      document.getElementById('txtTotalLancamentos').innerText = data ? data.length : 0;
     }
 
     document.getElementById('formLancamento').addEventListener('submit', async (e) => {
@@ -255,6 +469,7 @@
       if (error) alert('Erro ao salvar: ' + error.message);
       else {
         fecharModal('modalLancamento');
+        document.getElementById('formLancamento').reset();
         carregarFinanceiro();
       }
     });
@@ -281,66 +496,6 @@
         </html>
       `);
       janela.print();
-    }
-
-    // --- PACIENTES E PRONTUÁRIO ---
-    async function carregarPacientes() {
-      const { data, error } = await supabase.from('alunos').select('*').order('nome');
-      if (error) return;
-
-      const container = document.getElementById('listaPacientes');
-      container.innerHTML = '';
-
-      data.forEach(p => {
-        container.innerHTML += `
-          <div onclick="selecionarPaciente('${p.id}', '${p.nome}')" class="p-3 border rounded-lg hover:bg-indigo-50 cursor-pointer transition flex items-center justify-between">
-            <span class="font-medium text-slate-700">${p.nome}</span>
-            <i class="fa-solid fa-chevron-right text-xs text-slate-400"></i>
-          </div>
-        `;
-      });
-    }
-
-    async function selecionarPaciente(id, nome) {
-      pacienteSelecionado = id;
-      const detalhe = document.getElementById('detalhePaciente');
-      
-      // Carregar Prontuários
-      const { data: prontuarios } = await supabase.from('prontuarios').select('*').eq('paciente_id', id).order('data_sessao', { ascending: false });
-
-      detalhe.className = "md:col-span-2 bg-white rounded-xl shadow-sm p-6 border border-slate-200 block space-y-6";
-      detalhe.innerHTML = `
-        <div class="border-b pb-4 flex justify-between items-center">
-          <div>
-            <h2 class="text-xl font-bold text-slate-800">${nome}</h2>
-            <p class="text-xs text-slate-400">Ficha Clínica e Histórico Pedagógico</p>
-          </div>
-          <button onclick="adicionarEvolucao('${id}')" class="bg-indigo-600 text-white text-xs px-3 py-1.5 rounded-lg">+ Nova Evolução</button>
-        </div>
-
-        <div>
-          <h3 class="font-bold text-slate-700 mb-3 text-sm">Histórico de Sessões (Evolução)</h3>
-          <div class="space-y-3 max-h-80 overflow-y-auto">
-            ${prontuarios && prontuarios.length > 0 ? prontuarios.map(pr => `
-              <div class="p-3 bg-slate-50 border rounded-lg text-sm">
-                <div class="flex justify-between text-xs text-slate-400 mb-1">
-                  <span>${new Date(pr.data_sessao).toLocaleString('pt-BR')}</span>
-                </div>
-                <p class="text-slate-700 font-medium">${pr.resumo_sessao}</p>${pr.observacoes_comportamento ? `<p class="text-xs text-slate-500 mt-1"><strong>Obs:</strong> ${pr.observacoes_comportamento}</p>` : ''}
-              </div>
-            `).join('') : '<p class="text-xs text-slate-400 italic">Nenhuma evolução registrada ainda.</p>'}
-          </div>
-        </div>
-      `;
-    }
-
-    async function adicionarEvolucao(pacienteId) {
-      const resumo = prompt("Resumo da Sessão / Atividades Realizadas:");
-      if (!resumo) return;
-      const obs = prompt("Observações de Comportamento (Opcional):");
-
-      const { error } = await supabase.from('prontuarios').insert([{ paciente_id: pacienteId, resumo_sessao: resumo, observacoes_comportamento: obs }]);
-      if (!error) selecionarPaciente(pacienteId, document.querySelector('#detalhePaciente h2').innerText);
     }
   </script>
 </body>
