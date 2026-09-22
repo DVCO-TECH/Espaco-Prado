@@ -429,7 +429,9 @@
                             </div>
                             <div>
                                 <h4 class="font-title font-bold text-brand-text text-base">Telefone / WhatsApp</h4>
-                                <p class="text-sm text-brand-muted">(11) 91148-3886</p>
+                                <a href="https://wa.me/5511911483886" target="_blank" class="text-sm text-brand-muted hover:text-brand-sage transition-colors">
+                                    +55 11 91148-3886
+                                </a>
                             </div>
                         </div>
                     </div>
@@ -503,7 +505,7 @@
         </div>
     </footer>
 
-    <!-- JS PARA INTERATIVIDADE E INTEGRAÇÃO SUPABASE -->
+    <!-- JS PARA INTERATIVIDADE E INTEGRAÇÃO SUPABASE + WHATSAPP -->
     <script>
         // Configuração do Supabase Client
         const SUPABASE_URL = 'https://xmuyymsawzktgqvpqaks.supabase.co';
@@ -571,7 +573,7 @@
         window.addEventListener('scroll', revealOnScroll);
         revealOnScroll();
 
-        // Envio do Formulário de Agendamento ao Supabase
+        // Envio do Formulário de Agendamento ao Supabase + Redirecionamento WhatsApp
         const form = document.getElementById('booking-form');
         const submitBtn = document.getElementById('submit-btn');
         const statusMsg = document.getElementById('status-message');
@@ -580,7 +582,7 @@
             e.preventDefault();
             
             submitBtn.disabled = true;
-            submitBtn.innerText = "Enviando agendamento...";
+            submitBtn.innerText = "Processando...";
 
             const payload = {
                 client_name: document.getElementById('client_name').value,
@@ -591,6 +593,7 @@
                 appointment_time: document.getElementById('appointment_time').value
             };
 
+            // 1. Salvar no Supabase
             const { data, error } = await _supabase.from('appointments').insert([payload]);
 
             statusMsg.classList.remove('hidden', 'bg-green-100', 'text-green-800', 'bg-red-100', 'text-red-800');
@@ -603,10 +606,28 @@
                 submitBtn.innerText = "Confirmar Agendamento";
             } else {
                 statusMsg.classList.add('bg-green-100', 'text-green-800');
-                statusMsg.innerText = "Agendamento realizado com sucesso! Entraremos em contato em breve para confirmação.";
-                form.reset();
-                submitBtn.disabled = false;
-                submitBtn.innerText = "Confirmar Agendamento";
+                statusMsg.innerText = "Agendamento registrado! Abrindo o WhatsApp para confirmação...";
+
+                // Formatar data para exibição na mensagem
+                const [ano, mes, dia] = payload.appointment_date.split('-');
+                const dataFormatada = `${dia}/${mes}/${ano}`;
+
+                // 2. Montar mensagem e redirecionar para o WhatsApp do Espaço Prado
+                const whatsappNumber = '5511911483886';
+                const message = `Olá, Espaço Prado! Gostaria de agendar uma consulta.%0A%0A` +
+                    `*Nome:* ${encodeURIComponent(payload.client_name)}%0A` +
+                    `*E-mail:* ${encodeURIComponent(payload.client_email)}%0A` +
+                    `*Telefone:* ${encodeURIComponent(payload.client_phone)}%0A` +
+                    `*Serviço:* ${encodeURIComponent(payload.service_type)}%0A` +
+                    `*Data Preferencial:* ${encodeURIComponent(dataFormatada)}%0A` +
+                    `*Horário Preferencial:* ${encodeURIComponent(payload.appointment_time)}`;
+
+                setTimeout(() => {
+                    window.open(`https://wa.me/${whatsappNumber}?text=${message}`, '_blank');
+                    form.reset();
+                    submitBtn.disabled = false;
+                    submitBtn.innerText = "Confirmar Agendamento";
+                }, 1000);
             }
         });
     </script>
